@@ -1,8 +1,10 @@
-const express = require('express');
-const { getHotels, addHotel } = require('../controllers/hotelController');
+const express = require("express");
+const HotelController = require("../controllers/hotelController");
 const router = express.Router();
 
-router.get('/', getHotels);
-router.post('/', addHotel);
+router.get("/", HotelController.index);
+router.post("/", HotelController.store);
+router.put("/:id", HotelController.update);
+router.delete("/:id", HotelController.destroy);
 
 module.exports = router;

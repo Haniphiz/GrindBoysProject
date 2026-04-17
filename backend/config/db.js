@@ -1,15 +1,18 @@
-const mysql = require('mysql2');
+const mysql = require("mysql2");
 
-const conn = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '', // sesuaikan dengan konfigurasi MySQL kamu
-  database: 'bookinghotel'
+const db = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "bookinghotel"
 });
 
-conn.connect(err => {
-  if (err) throw err;
-  console.log("✅ Koneksi ke bookinghotel berhasil!");
+db.connect(err => {
+  if (err) {
+    console.error("Koneksi gagal:", err);
+  } else {
+    console.log("Koneksi database berhasil");
+  }
 });
 
-module.exports = conn;
+module.exports = db;

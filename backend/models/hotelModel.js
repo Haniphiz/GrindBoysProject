@@ -1,9 +1,21 @@
-const conn = require('../config/db');
+const db = require("../config/db");
 
-exports.getAllHotels = (callback) => {
-  conn.query("SELECT * FROM hotels", callback);
-};
+class Hotel {
+  static getAll(callback) {
+    db.query("SELECT * FROM hotels", callback);
+  }
 
-exports.addHotel = (data, callback) => {
-  conn.query("INSERT INTO hotels SET ?", data, callback);
-};
+  static create(data, callback) {
+    db.query("INSERT INTO hotels SET ?", data, callback);
+  }
+
+  static update(id, data, callback) {
+    db.query("UPDATE hotels SET ? WHERE id = ?", [data, id], callback);
+  }
+
+  static delete(id, callback) {
+    db.query("DELETE FROM hotels WHERE id = ?", [id], callback);
+  }
+}
+
+module.exports = Hotel;
