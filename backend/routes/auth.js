@@ -4,19 +4,19 @@ const db = require("../config/db");
 
 // REGISTER
 router.post("/register", (req, res) => {
-  const { username, password } = req.body;
+  console.log("BODY MASUK:", req.body);
+  const { email, username, password } = req.body;
 
-  db.query(
-    "INSERT INTO users (username, password) VALUES (?, ?)",
-    [username, password],
-    (err) => {
-      if (err) {
-        console.log(err);
-        return res.json({ message: "Register gagal" });
-      }
-      res.json({ message: "Register berhasil" });
+  const sql = "INSERT INTO users (email, username, password) VALUES (?, ?, ?)";
+  db.query(sql, [email, username, password], (err, result) => {
+    if (err) {
+      console.log(err);
+      // Kirim dalam bentuk JSON agar dibaca benar oleh frontend
+      return res.status(500).json({ message: "Register gagal: " + err.sqlMessage });
     }
-  );
+    // Kirim dalam bentuk JSON agar alert(data.message) muncul tulisan "Berhasil!"
+    res.json({ message: "Berhasil!" });
+  });
 });
 
 // LOGIN
