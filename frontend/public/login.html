@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Hotel</title>
+  <style>
+body {
+  margin: 0;
+  font-family: Arial;
+  height: 100vh;
+
+  background: 
+    linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+    url("https://images.unsplash.com/photo-1566073771259-6a8506099945");
+
+  background-size: cover;
+  background-position: center;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* CARD UTAMA */
+.card {
+  width: 350px;
+  padding: 30px;
+
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(12px);
+
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+
+  box-shadow: 0 0 30px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* JUDUL */
+.card h2 {
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* INPUT */
+input {
+  width: 93%;
+  padding: 12px;
+  margin: 10px 0;
+
+  border-radius: 8px;
+  border: none;
+  outline: none;
+
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+
+  border: none;
+  border-radius: 50px;
+
+  background: linear-gradient(to right, gold, #d4af37);
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+
+  transition: 0.3s;
+}
+
+/* HOVER BUTTON */
+button:hover {
+  opacity: 0.85;
+}
+
+/* LINK */
+a {
+  color: gold;
+  text-decoration: none;
+}
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>Selamat datang di GrindBoys Hotel</h2>
+  <h5>Masuk untuk melanjutkan ke akun Anda</h5>
+
+  <input id="username" placeholder="Username">
+  <input id="password" type="password" placeholder="Password">
+
+  <button onclick="login()">Login</button>
+
+  <p>Belum punya akun?<a href="register.html"> Daftar </a></p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
