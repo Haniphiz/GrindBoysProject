@@ -4,5 +4,7 @@ const router = express.Router();
 
 router.get('/', getBookings);
 router.post('/', addBooking);
+console.log("getBookings:", getBookings);
+console.log("addBooking:", addBooking);
 
 module.exports = router;
