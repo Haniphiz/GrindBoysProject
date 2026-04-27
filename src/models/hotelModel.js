@@ -1,21 +1,24 @@
 const db = require("../config/db");
 
-class Hotel {
-  static getAll(callback) {
+const Hotel = {
+  getAll: (callback) => {
     db.query("SELECT * FROM hotels", callback);
-  }
+  },
 
-  static create(data, callback) {
-    db.query("INSERT INTO hotels SET ?", data, callback);
-  }
+  create: (data, callback) => {
+    const sql = `
+      INSERT INTO hotels (name, address, city, description, image_url)
+      VALUES (?, ?, ?, ?, ?)
+    `;
 
-  static update(id, data, callback) {
-    db.query("UPDATE hotels SET ? WHERE id = ?", [data, id], callback);
+    db.query(sql, [
+      data.name,
+      data.address,
+      data.city,
+      data.description,
+      data.image_url
+    ], callback);
   }
-
-  static delete(id, callback) {
-    db.query("DELETE FROM hotels WHERE id = ?", [id], callback);
-  }
-}
+};
 
 module.exports = Hotel;

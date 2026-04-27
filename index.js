@@ -12,6 +12,12 @@ app.use(express.json());
 
 const authRoutes = require("./src/routes/authRoutes");
 const bookingRoutes = require("./src/routes/bookingRoutes");
+const roomRoutes = require("./src/routes/roomRoutes");
+const hotelRoutes = require("./src/routes/hotelRoutes");
+
+app.use("/hotels", hotelRoutes);
+
+app.use("/rooms", roomRoutes);
 
 // ROUTES
 app.use("/auth", authRoutes);
