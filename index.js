@@ -10,6 +10,8 @@ const port = 3000;
 // 🔥 WAJIB DI ATAS
 app.use(express.json());
 
+app.use("/uploads", express.static("uploads"));
+
 const authRoutes = require("./src/routes/authRoutes");
 const bookingRoutes = require("./src/routes/bookingRoutes");
 const roomRoutes = require("./src/routes/roomRoutes");
