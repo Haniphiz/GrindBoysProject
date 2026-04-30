@@ -1,7 +1,11 @@
 const express = require("express");
 const router = express.Router();
-
-const { getHotels, createHotel } = require("../controllers/hotelController");
+const { 
+  getHotels, 
+  createHotel, 
+  updateHotel, 
+  deleteHotel 
+} = require("../controllers/hotelController");
 
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
@@ -21,6 +25,21 @@ router.post(
 router.get("/", getHotels);
 
 // hanya admin yang bisa tambah hotel
-router.post("/", auth, authorize("admin"), createHotel);
+// UPDATE hotel (admin only + optional upload)
+router.put(
+  "/:id",
+  auth,
+  authorize("admin"),
+  upload.single("image"),
+  updateHotel
+);
+
+// DELETE hotel (admin only)
+router.delete(
+  "/:id",
+  auth,
+  authorize("admin"),
+  deleteHotel
+);
 
 module.exports = router;

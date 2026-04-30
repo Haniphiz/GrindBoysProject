@@ -69,4 +69,72 @@ exports.createHotel = (req, res) => {
       });
     }
   );
+
+  
+};
+
+// UPDATE HOTEL
+exports.updateHotel = (req, res) => {
+  const id = req.params.id;
+
+  const name = req.body?.name;
+  const address = req.body?.address;
+  const city = req.body?.city;
+  const description = req.body?.description;
+
+  // ambil file baru (jika upload ulang)
+  const image_url = req.file ? req.file.filename : null;
+
+  if (!name || !address || !city) {
+    return res.status(400).json({
+      status: "error",
+      message: "Nama, alamat, dan kota wajib diisi"
+    });
+  }
+
+  Hotel.update(
+    id,
+    { name, address, city, description, image_url },
+    (err, result) => {
+      if (err) {
+        return res.status(500).json({
+          status: "error",
+          message: err.message
+        });
+      }
+
+      res.json({
+        status: "success",
+        message: "Hotel berhasil diperbarui"
+      });
+    }
+  );
+};
+
+
+// DELETE HOTEL
+exports.deleteHotel = (req, res) => {
+  const id = req.params.id;
+
+  Hotel.delete(id, (err, result) => {
+    if (err) {
+      // cek error foreign key
+      if (err.code === "ER_ROW_IS_REFERENCED_2") {
+        return res.status(400).json({
+          status: "error",
+          message: "Hotel tidak bisa dihapus karena masih memiliki relasi (room/booking)"
+        });
+      }
+
+      return res.status(500).json({
+        status: "error",
+        message: err.message
+      });
+    }
+
+    res.json({
+      status: "success",
+      message: "Hotel berhasil dihapus"
+    });
+  });
 };
