@@ -6,7 +6,7 @@ const auth = (req, res, next) => {
   if (!header) {
     return res.status(401).json({
       status: "error",
-      message: "Token tidak ada"
+      message: "Username atau password salah"
     });
   }
 

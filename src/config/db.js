@@ -1,18 +1,21 @@
-const mysql = require("mysql2");
+const mysql = require('mysql2/promise');
 
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "booking_hotel"
+const db = mysql.createPool({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'booking_hotel'
 });
 
-db.connect(err => {
-  if (err) {
-    console.error("Koneksi gagal:", err);
-  } else {
+// Optional: test koneksi
+(async () => {
+  try {
+    const connection = await db.getConnection();
     console.log("Koneksi database berhasil");
+    connection.release();
+  } catch (error) {
+    console.error("Koneksi database gagal:", error);
   }
-});
+})();
 
 module.exports = db;

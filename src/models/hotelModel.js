@@ -1,45 +1,63 @@
 const db = require("../config/db");
 
 const Hotel = {
-  getAll: (callback) => {
-    db.query("SELECT * FROM hotels", callback);
+
+  // 🔍 Ambil semua hotel
+  getAll: async () => {
+    const [rows] = await db.query("SELECT * FROM hotels");
+    return rows;
   },
 
-  create: (data, callback) => {
-    const sql = `
-      INSERT INTO hotels (name, address, city, description, image_url)
-      VALUES (?, ?, ?, ?, ?)
-    `;
-
-    db.query(sql, [
-      data.name,
-      data.address,
-      data.city,
-      data.description,
-      data.image_url
-    ], callback);
+  // 🔍 Ambil hotel by ID
+  getById: async (id) => {
+    const [rows] = await db.query(
+      "SELECT * FROM hotels WHERE id = ?",
+      [id]
+    );
+    return rows[0];
   },
 
-  
-  update: (id, data, callback) => {
-    const sql = `
-      UPDATE hotels 
-      SET name=?, address=?, city=?, description=?, image_url=?
-      WHERE id=?
-    `;
-
-    db.query(sql, [
-      data.name,
-      data.address,
-      data.city,
-      data.description,
-      data.image_url,
-      id
-    ], callback);
+  // ➕ Tambah hotel
+  create: async (data) => {
+    const [result] = await db.query(
+      `INSERT INTO hotels (name, address, city, description, image_url)
+       VALUES (?, ?, ?, ?, ?)`,
+      [
+        data.name,
+        data.address,
+        data.city,
+        data.description,
+        data.image_url
+      ]
+    );
+    return result;
   },
 
-  delete: (id, callback) => {
-    db.query("DELETE FROM hotels WHERE id=?", [id], callback);
+  // ✏️ Update hotel
+  update: async (id, data) => {
+    const [result] = await db.query(
+      `UPDATE hotels 
+       SET name=?, address=?, city=?, description=?, image_url=?
+       WHERE id=?`,
+      [
+        data.name,
+        data.address,
+        data.city,
+        data.description,
+        data.image_url,
+        id
+      ]
+    );
+    return result;
+  },
+
+  // ❌ Delete hotel
+  delete: async (id) => {
+    const [result] = await db.query(
+      "DELETE FROM hotels WHERE id=?",
+      [id]
+    );
+    return result;
   }
 };
 

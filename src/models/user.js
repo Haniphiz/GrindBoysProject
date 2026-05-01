@@ -1,41 +1,43 @@
-const db = require("../config/db"); // pastikan path ini benar
+const db = require("../config/db");
 
 class User {
   // 🔍 cari user berdasarkan email
-  static findByEmail(email, callback) {
-    const sql = "SELECT * FROM users WHERE email = ?";
-    db.query(sql, [email], callback);
+  static async findByEmail(email) {
+    const [rows] = await db.query(
+      "SELECT * FROM users WHERE email = ?",
+      [email]
+    );
+    return rows;
   }
 
   // ➕ tambah user
-  static create(data, callback) {
-    const sql = `
-      INSERT INTO users (username, email, password, role)
-      VALUES (?, ?, ?, ?)
-    `;
-
-    db.query(
-      sql,
+  static async create(data) {
+    const [result] = await db.query(
+      `INSERT INTO users (username, email, password, role)
+       VALUES (?, ?, ?, ?)`,
       [
         data.username,
         data.email,
         data.password,
         data.role || "user"
-      ],
-      callback
+      ]
     );
+    return result;
   }
 
   // 🔍 ambil semua user
-  static getAll(callback) {
-    const sql = "SELECT * FROM users";
-    db.query(sql, callback);
+  static async getAll() {
+    const [rows] = await db.query("SELECT * FROM users");
+    return rows;
   }
 
   // 🔍 ambil user by id
-  static findById(id, callback) {
-    const sql = "SELECT * FROM users WHERE id = ?";
-    db.query(sql, [id], callback);
+  static async findById(id) {
+    const [rows] = await db.query(
+      "SELECT * FROM users WHERE id = ?",
+      [id]
+    );
+    return rows[0];
   }
 }
 
