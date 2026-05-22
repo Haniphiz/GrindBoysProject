@@ -134,3 +134,37 @@ exports.deleteHotel = async (req, res) => {
     });
   }
 };
+// 🔍 DETAIL HOTEL
+exports.getHotelDetail = async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const hotel = await Hotel.getDetail(id);
+
+    if (!hotel) {
+      return res.status(404).json({
+        status: "error",
+        message: "Hotel tidak ditemukan"
+      });
+    }
+
+    // image url hotel
+    if (hotel.hotel.image_url) {
+      hotel.hotel.image_url =
+        `${req.protocol}://${req.get("host")}/uploads/${hotel.hotel.image_url}`;
+    }
+
+    res.json({
+      status: "success",
+      data: hotel
+    });
+
+  } catch (error) {
+    console.error("DETAIL HOTEL ERROR:", error);
+
+    res.status(500).json({
+      status: "error",
+      message: error.message
+    });
+  }
+};

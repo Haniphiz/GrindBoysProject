@@ -6,7 +6,7 @@ const getBookings = (req, res) => {
   const user_id = req.user.id;
 
   bookingModel.getBookingsByUser(user_id, (err, results) => {
-    if (err) {
+    if (err) {  
       return res.status(500).json({
         status: "error",
         message: err.message
@@ -57,28 +57,69 @@ const addBooking = async (req, res) => {
         message: "Room tidak ditemukan"
       });
     }
-
     const price = room[0].price;
 
+// 🔍 CEK APAKAH ROOM SUDAH DIBOOKING
+const [existingBooking] = await db.query(
+  `
+  SELECT * FROM bookings
+  WHERE room_id = ?
+  AND status != 'cancelled'
+  AND (
+    (check_in <= ? AND check_out >= ?)
+    OR
+    (check_in <= ? AND check_out >= ?)
+    OR
+    (check_in >= ? AND check_out <= ?)
+  )
+  `,
+  [
+    room_id,
+    check_in, check_in,
+    check_out, check_out,
+    check_in, check_out
+  ]
+);
+
+if (existingBooking.length > 0) {
+  return res.status(400).json({
+    status: "error",
+    message: "Room sudah dibooking pada tanggal tersebut"
+  });
+}
     // 💰 Hitung jumlah hari
     const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
 
     const total_price = days * price;
 
+    const status = "pending";
+
     // ➕ Insert booking
-    const [result] = await db.query(
-      `INSERT INTO bookings (user_id, room_id, check_in, check_out, total_price)
-       VALUES (?, ?, ?, ?, ?)`,
-      [user_id, room_id, check_in, check_out, total_price]
-    );
-
-    res.status(201).json({
-      status: "success",
-      message: "Booking berhasil ditambahkan",
-      bookingId: result.insertId,
-      total_price
-    });
-
+  const [result] = await db.query(
+  `INSERT INTO bookings 
+   (user_id, room_id, check_in, check_out, total_price, status)
+   VALUES (?, ?, ?, ?, ?, ?)`,
+  [
+    user_id,
+    room_id,
+    check_in,
+    check_out,
+    total_price,
+    status
+  ]
+);
+res.status(201).json({
+  status: "success",
+  message: "Booking berhasil ditambahkan",
+  data: {
+    booking_id: result.insertId,
+    room_id,
+    check_in,
+    check_out,
+    total_price,
+    booking_status: status
+  }
+});
   } catch (error) {
     console.error(error);
     res.status(500).json({

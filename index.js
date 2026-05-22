@@ -16,6 +16,9 @@ const authRoutes = require("./src/routes/authRoutes");
 const bookingRoutes = require("./src/routes/bookingRoutes");
 const roomRoutes = require("./src/routes/roomRoutes");
 const hotelRoutes = require("./src/routes/hotelRoutes");
+const paymentRoutes = require("./src/routes/paymentRoutes");
+
+app.use("/payments", paymentRoutes);
 
 app.use("/hotels", hotelRoutes);
 

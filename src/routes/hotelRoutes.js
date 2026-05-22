@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { 
   getHotels, 
+  getHotelDetail,
   createHotel, 
   updateHotel, 
   deleteHotel 
@@ -23,7 +24,7 @@ router.post(
 
 // semua user bisa lihat hotel
 router.get("/", getHotels);
-
+router.get("/:id", getHotelDetail);
 // hanya admin yang bisa tambah hotel
 // UPDATE hotel (admin only + optional upload)
 router.put(
