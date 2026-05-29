@@ -1,20 +1,20 @@
-import Navbar from "../components/Navbar"; // Pastikan path import sudah sesuai dengan struktur foldermu
-import Footer from "../components/Footer";
+import Navbar from "./components/navbar/Navbar";
+import Footer from "./components/footer/Footer";
+
+import Home from "./components/pages/Home";
+import Hotel from "./components/pages/Hotel";
+
+import { Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <>
       <Navbar />
-      
-      <div style={{ padding: "80px 20px", textAlign: "center" }}>
-        <h1 style={{ fontSize: "50px", marginBottom: "20px", lineHeight: "1.3" }}>
-          Selamat Datang di Web Pemesanan<br />Tiket Hotel
-        </h1>
 
-        <p style={{ fontSize: "20px", color: "gray", marginTop: "10px" }}>
-          Pesan hotel dengan mudah dan cepat.
-        </p>
-      </div>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/hotel" element={<Hotel />} />
+      </Routes>
 
       <Footer />
     </>

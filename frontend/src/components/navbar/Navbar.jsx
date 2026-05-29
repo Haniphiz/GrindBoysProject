@@ -1,14 +1,34 @@
+import { Link } from "react-router-dom";
+
 function Navbar() {
   return (
     <nav style={navbarStyles.navbar}>
       <h2 style={navbarStyles.logo}>HotelBooking</h2>
+<ul style={navbarStyles.navLinks}>
+  <li>
+    <Link to="/" style={navbarStyles.link}>
+      Home
+    </Link>
+  </li>
 
-      <ul style={navbarStyles.navLinks}>
-        <li><a href="/" style={navbarStyles.link}>Home</a></li>
-        <li><a href="/hotel" style={navbarStyles.link}>Hotel</a></li>
-        <li><a href="/booking" style={navbarStyles.link}>Booking</a></li>
-        <li><a href="/login" style={navbarStyles.link}>Login</a></li>
-      </ul>
+  <li>
+    <Link to="/hotel" style={navbarStyles.link}>
+      Hotel
+    </Link>
+  </li>
+
+  <li>
+    <Link to="/booking" style={navbarStyles.link}>
+      Booking
+    </Link>
+  </li>
+
+  <li>
+    <Link to="/login" style={navbarStyles.link}>
+      Login
+    </Link>
+  </li>
+</ul>
     </nav>
   );
 }
