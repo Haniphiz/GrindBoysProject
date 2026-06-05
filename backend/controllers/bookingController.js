@@ -62,4 +62,73 @@ const addBooking = async (req, res) => {
   }
 };
 
-module.exports = { getBookings, addBooking };
+// ✅ COMPLETE BOOKING / CHECKOUT
+const completeBooking = async (req, res) => {
+  try {
+
+    const booking_id = req.params.id;
+    const user_id = req.user.id;
+
+    const [bookingRows] = await db.query(
+      `
+      SELECT *
+      FROM bookings
+      WHERE id = ?
+      AND user_id = ?
+      `,
+      [booking_id, user_id]
+    );
+
+    if (bookingRows.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "Booking tidak ditemukan"
+      });
+    }
+
+    const booking = bookingRows[0];
+
+    if (booking.status !== "confirmed") {
+      return res.status(400).json({
+        status: "error",
+        message: "Hanya booking berstatus confirmed yang dapat diselesaikan"
+      });
+    }
+
+    await db.query(
+      `
+      UPDATE bookings
+      SET status = 'completed'
+      WHERE id = ?
+      `,
+      [booking_id]
+    );
+
+    res.json({
+      status: "success",
+      message: "Booking berhasil diselesaikan",
+      data: {
+        booking_id,
+        old_status: "confirmed",
+        new_status: "completed"
+      }
+    });
+
+  } catch (error) {
+
+    console.error("COMPLETE BOOKING ERROR:", error);
+
+    res.status(500).json({
+      status: "error",
+      message: "Terjadi kesalahan server"
+    });
+  }
+};
+
+module.exports = {
+  getBookings,
+  addBooking,
+  completeBooking
+};
+
+

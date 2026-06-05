@@ -3,7 +3,7 @@ require("dotenv").config();
 
 const express = require("express");
 const cors = require("cors"); 
-const db = require("./src/config/db");
+const db = require("./backend/config/db");
 
 const app = express();
 const port = 3000;
@@ -20,11 +20,12 @@ app.use(express.json());
 
 app.use("/uploads", express.static("uploads"));
 
-const authRoutes = require("./src/routes/authRoutes");
-const bookingRoutes = require("./src/routes/bookingRoutes");
-const roomRoutes = require("./src/routes/roomRoutes");
-const hotelRoutes = require("./src/routes/hotelRoutes");
-const paymentRoutes = require("./src/routes/paymentRoutes");
+const reviewRoutes = require("./backend/routes/reviewRoutes");
+const authRoutes = require("./backend/routes/authRoutes");
+const bookingRoutes = require("./backend/routes/bookingRoutes");
+const roomRoutes = require("./backend/routes/roomRoutes");
+const hotelRoutes = require("./backend/routes/hotelRoutes");
+const paymentRoutes = require("./backend/routes/paymentRoutes");
 
 app.use("/payments", paymentRoutes);
 
@@ -32,6 +33,7 @@ app.use("/hotels", hotelRoutes);
 
 app.use("/rooms", roomRoutes);
 
+app.use("/reviews", reviewRoutes);
 // ROUTES
 app.use("/auth", authRoutes);
 app.use("/booking", bookingRoutes);
