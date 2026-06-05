@@ -10,7 +10,7 @@ function Navbar() {
       Home
     </Link>
   </li>
-
+cd gtr
   <li>
     <Link to="/hotel" style={navbarStyles.link}>
       Hotel
