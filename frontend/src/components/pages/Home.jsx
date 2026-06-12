@@ -1,5 +1,7 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
+
 
 const featuredHotels = [
   {
@@ -52,6 +54,7 @@ const destinations = [
 ];
 
 export default function Home() {
+  const navigate = useNavigate();
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [location, setLocation] = useState("");
@@ -65,7 +68,7 @@ export default function Home() {
       {/* ── HERO ── */}
       <section className="hero">
         <div className="hero__overlay" />
-        <div className="hero__content">
+        <div className="hero__content animate-fade-up">
           <span className="hero__badge">✦ Temukan Penginapan Impian Anda</span>
           <h1 className="hero__title">
             Setiap Perjalanan<br />
@@ -112,7 +115,7 @@ export default function Home() {
 
       {/* ── STATS ── */}
       <section className="stats">
-        <div className="stats__inner">
+        <div className="stats__inner animate-fade-up delay-1">
           {[
             { value: "10.000+", label: "Hotel Tersedia" },
             { value: "1 Juta+", label: "Pelanggan Puas" },
@@ -129,7 +132,7 @@ export default function Home() {
 
       {/* ── DESTINASI POPULER ── */}
       <section className="section">
-        <div className="section__header">
+        <div className="section__header animate-fade-up delay-2">
           <div>
             <p className="section__eyebrow">Jelajahi Indonesia</p>
             <h2 className="section__title">Destinasi Terpopuler</h2>
@@ -139,7 +142,7 @@ export default function Home() {
         <div className="destinations">
           {destinations.map((d) => (
             <div className="dest-card" key={d.name}>
-              <img src={d.img} alt={d.name} />
+              <img src={d.img} alt={d.name} loading="lazy" />
               <div className="dest-card__info">
                 <strong>{d.name}</strong>
                 <span>{d.hotels} hotel</span>
@@ -151,7 +154,7 @@ export default function Home() {
 
       {/* ── HOTEL UNGGULAN ── */}
       <section className="section section--alt">
-        <div className="section__header">
+        <div className="section__header animate-fade-up delay-3">
           <div>
             <p className="section__eyebrow">Pilihan Editor</p>
             <h2 className="section__title">Hotel Unggulan</h2>
@@ -162,7 +165,7 @@ export default function Home() {
           {featuredHotels.map((h) => (
             <div className="hotel-card" key={h.id}>
               <div className="hotel-card__img-wrap">
-                <img src={h.image} alt={h.name} />
+                <img src={h.image} alt={h.name} loading="lazy" />
                 <span className="hotel-card__tag">{h.tag}</span>
                 <button className="hotel-card__wishlist" aria-label="Simpan">♡</button>
               </div>
@@ -178,7 +181,7 @@ export default function Home() {
                     <span className="hotel-card__price">{formatPrice(h.price)}</span>
                     <span className="hotel-card__per"> / malam</span>
                   </div>
-                  <button className="hotel-card__btn">Pesan</button>
+                  <button className="hotel-card__btn" onClick={() => navigate("/payment", { state: { hotel: h } })}>Pesan</button>
                 </div>
               </div>
             </div>
@@ -188,7 +191,7 @@ export default function Home() {
 
       {/* ── KENAPA GRINDBOYS ── */}
       <section className="section">
-        <div className="section__header center">
+        <div className="section__header center animate-fade-up delay-4">
           <div>
             <p className="section__eyebrow">Keunggulan Kami</p>
             <h2 className="section__title">Mengapa Memilih GrindBoys?</h2>
@@ -212,7 +215,7 @@ export default function Home() {
 
       {/* ── CTA BANNER ── */}
       <section className="cta-banner">
-        <div className="cta-banner__content">
+        <div className="cta-banner__content animate-fade-up delay-5">
           <h2>Dapatkan Diskon 20% untuk Pemesanan Pertama!</h2>
           <p>Daftar sekarang dan nikmati penawaran eksklusif untuk member baru GrindBoys.</p>
           <div className="cta-banner__actions">
