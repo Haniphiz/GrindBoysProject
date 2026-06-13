@@ -1,0 +1,404 @@
+/* =========================================
+   MOBILE FIRST APPROACH (DEFAULT)
+   ========================================= */
+.container {
+  position: relative; /* Diperlukan agar tombol kembali bisa absolute */
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+/* --- 🔧 PERBAIKAN: Tombol Kembali Pojok Kiri Atas --- */
+.btnBack {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  z-index: 100; /* Pastikan selalu di atas elemen lain */
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid #e2e8f0;
+  color: #000000;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 10px 16px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  font-family: inherit;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.btnBack:hover {
+  background: #ffffff;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transform: translateX(-2px);
+}
+
+/* --- Banner (Hidden di Mobile) --- */
+.banner {
+  display: none; 
+}
+
+/* --- Form Section --- */
+.formSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: #ffffff;
+}
+
+.formCard {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 40px; 
+  margin-bottom: 40px;
+}
+
+/* --- Mobile Logo --- */
+.mobileLogo {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.mobileLogo h2 {
+  color: #2563eb;
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+/* --- Header --- */
+.header {
+  margin-bottom: 32px;
+}
+
+.header h2 {
+  font-size: 1.8rem;
+  color: #0f172a;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.header p {
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* --- Error Box --- */
+.errorBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  border: 1px solid #fecaca;
+}
+
+/* --- Form Elements --- */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputGroup label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.inputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  position: absolute;
+  left: 16px;
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.inputWrapper input {
+  width: 100%;
+  padding: 16px 48px 16px 48px; 
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #0f172a;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+}
+
+.inputWrapper input:focus {
+  border-color: #2563eb;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.inputWrapper input::placeholder {
+  color: #94a3b8;
+}
+
+/* --- 🔧 PERBAIKAN: Tombol Toggle SVG Hitam Standar --- */
+.togglePass {
+  position: absolute;
+  right: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #000000; /* Warna Hitam Standar */
+  padding: 4px;
+  border-radius: 6px;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.togglePass:hover {
+  background: #f1f5f9;
+}
+
+.forgotPass {
+  text-align: right;
+  margin-top: -8px;
+}
+
+.forgotPass a {
+  font-size: 13px;
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.forgotPass a:hover {
+  text-decoration: underline;
+}
+
+/* --- Button Login --- */
+.btnLogin {
+  width: 100%;
+  padding: 16px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+}
+
+.btnLogin:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+.btnLogin:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btnLogin:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* Spinner */
+.spinner {
+  width: 22px;
+  height: 22px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 0.8s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Divider --- */
+.divider {
+  display: flex;
+  align-items: center;
+  margin: 28px 0 24px;
+}
+
+.divider::before, .divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e2e8f0;
+}
+
+.divider span {
+  padding: 0 16px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+/* --- Footer --- */
+.footer {
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.footer a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================
+   BREAKPOINT MEDIUM: TABLET (≥768px)
+   ========================================= */
+@media (min-width: 768px) {
+  .mobileLogo {
+    display: none;
+  }
+
+  /* Efek card putih mengambang sedikit untuk tombol kembali */
+  .btnBack {
+    background: rgba(255, 255, 255, 0.9);
+    top: 32px;
+    left: 32px;
+  }
+
+  .container {
+    background: #ffffff;
+  }
+
+  .banner {
+    display: flex;
+    flex: 1;
+    position: relative;
+    background: url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80') center/cover no-repeat;
+    overflow: hidden;
+  }
+
+  .bannerOverlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(37, 99, 235, 0.7) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+  }
+
+  .bannerContent {
+    color: #fff;
+    max-width: 400px;
+  }
+
+  .bannerContent h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 16px;
+  }
+
+  .bannerContent h1 span {
+    color: #fbbf24;
+  }
+
+  .bannerContent p {
+    font-size: 1rem;
+    color: rgba(255,255,255,0.85);
+    line-height: 1.6;
+    margin-bottom: 40px;
+  }
+
+  .bannerStats {
+    display: flex;
+    gap: 32px;
+  }
+
+  .statItem {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .statItem strong {
+    font-size: 1.5rem;
+    color: #fbbf24;
+  }
+
+  .statItem span {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .formSection {
+    flex: 1;
+    background: #ffffff;
+    padding: 60px 40px;
+    align-items: flex-start;
+    padding-top: 12vh; 
+  }
+
+  .formCard {
+    margin-top: 0; 
+    margin-bottom: 0;
+  }
+}
+
+/* =========================================
+   BREAKPOINT LARGE: DESKTOP (≥992px)
+   ========================================= */
+@media (min-width: 992px) {
+  .formSection {
+    padding: 0 80px;
+    justify-content: center;
+  }
+
+  .bannerContent h1 {
+    font-size: 3rem;
+  }
+
+  .bannerStats {
+    gap: 48px;
+  }
+
+  .statItem strong {
+    font-size: 1.8rem;
+  }
+}

@@ -1,4 +1,4 @@
-import ListHotel from "../listHotel/ListHotel";
+import ListHotel from "../../components/listHotel/ListHotel";
 
 function Hotel() {
   return <ListHotel />;
