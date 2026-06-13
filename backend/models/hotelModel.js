@@ -8,6 +8,14 @@ const Hotel = {
     return rows;
   },
 
+  // 🌟 Ambil hotel unggulan untuk halaman utama
+getFeatured: async () => {
+  const [rows] = await db.query(
+    "SELECT * FROM hotels ORDER BY id DESC LIMIT 4"
+  );
+  return rows;
+},
+
   // 🔍 Ambil hotel by ID
   getById: async (id) => {
     const [rows] = await db.query(

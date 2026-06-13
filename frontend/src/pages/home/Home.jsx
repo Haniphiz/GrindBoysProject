@@ -1,50 +1,5 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import "./Home.css";
-
-
-const featuredHotels = [
-  {
-    id: 1,
-    name: "The Grand Majapahit",
-    location: "Surabaya, Jawa Timur",
-    price: 850000,
-    rating: 4.9,
-    reviews: 312,
-    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&q=80",
-    tag: "Populer",
-  },
-  {
-    id: 2,
-    name: "Ayana Resort Bali",
-    location: "Jimbaran, Bali",
-    price: 2400000,
-    rating: 4.8,
-    reviews: 541,
-    image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&q=80",
-    tag: "Mewah",
-  },
-  {
-    id: 3,
-    name: "Bromo Highland Hotel",
-    location: "Probolinggo, Jawa Timur",
-    price: 620000,
-    rating: 4.7,
-    reviews: 198,
-    image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=80",
-    tag: "Alam",
-  },
-  {
-    id: 4,
-    name: "Labuan Bajo Dive Lodge",
-    location: "Labuan Bajo, NTT",
-    price: 1100000,
-    rating: 4.8,
-    reviews: 275,
-    image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=80",
-    tag: "Petualangan",
-  },
-];
 
 const destinations = [
   { name: "Bali", hotels: 420, img: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&q=80" },
@@ -54,21 +9,34 @@ const destinations = [
 ];
 
 export default function Home() {
-  const navigate = useNavigate();
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [location, setLocation] = useState("");
   const [guests, setGuests] = useState(2);
+  const [featuredHotels, setFeaturedHotels] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const formatPrice = (price) =>
-    new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
+  useEffect(() => {
+    fetch("http://localhost:3000/api/hotels/featured")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.status === "success") {
+          setFeaturedHotels(data.data);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Gagal fetch hotel:", err);
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <main className="home">
       {/* ── HERO ── */}
       <section className="hero">
         <div className="hero__overlay" />
-        <div className="hero__content animate-fade-up">
+        <div className="hero__content">
           <span className="hero__badge">✦ Temukan Penginapan Impian Anda</span>
           <h1 className="hero__title">
             Setiap Perjalanan<br />
@@ -78,7 +46,6 @@ export default function Home() {
             Ribuan pilihan hotel terbaik di seluruh Indonesia, harga terjangkau, pemesanan mudah.
           </p>
 
-          {/* Search Card */}
           <div className="search-card">
             <div className="search-card__field">
               <label>Destinasi</label>
@@ -115,7 +82,7 @@ export default function Home() {
 
       {/* ── STATS ── */}
       <section className="stats">
-        <div className="stats__inner animate-fade-up delay-1">
+        <div className="stats__inner">
           {[
             { value: "10.000+", label: "Hotel Tersedia" },
             { value: "1 Juta+", label: "Pelanggan Puas" },
@@ -132,7 +99,7 @@ export default function Home() {
 
       {/* ── DESTINASI POPULER ── */}
       <section className="section">
-        <div className="section__header animate-fade-up delay-2">
+        <div className="section__header">
           <div>
             <p className="section__eyebrow">Jelajahi Indonesia</p>
             <h2 className="section__title">Destinasi Terpopuler</h2>
@@ -142,7 +109,7 @@ export default function Home() {
         <div className="destinations">
           {destinations.map((d) => (
             <div className="dest-card" key={d.name}>
-              <img src={d.img} alt={d.name} loading="lazy" />
+              <img src={d.img} alt={d.name} />
               <div className="dest-card__info">
                 <strong>{d.name}</strong>
                 <span>{d.hotels} hotel</span>
@@ -154,44 +121,47 @@ export default function Home() {
 
       {/* ── HOTEL UNGGULAN ── */}
       <section className="section section--alt">
-        <div className="section__header animate-fade-up delay-3">
+        <div className="section__header">
           <div>
             <p className="section__eyebrow">Pilihan Editor</p>
             <h2 className="section__title">Hotel Unggulan</h2>
           </div>
           <a href="#" className="section__link">Lihat Semua →</a>
         </div>
-        <div className="hotels-grid">
-          {featuredHotels.map((h) => (
-            <div className="hotel-card" key={h.id}>
-              <div className="hotel-card__img-wrap">
-                <img src={h.image} alt={h.name} loading="lazy" />
-                <span className="hotel-card__tag">{h.tag}</span>
-                <button className="hotel-card__wishlist" aria-label="Simpan">♡</button>
-              </div>
-              <div className="hotel-card__body">
-                <div className="hotel-card__meta">
-                  <span className="hotel-card__rating">★ {h.rating}</span>
-                  <span className="hotel-card__reviews">({h.reviews} ulasan)</span>
+
+        {loading ? (
+          <p style={{ textAlign: "center", color: "#888" }}>Memuat hotel...</p>
+        ) : featuredHotels.length === 0 ? (
+          <p style={{ textAlign: "center", color: "#888" }}>Belum ada hotel tersedia.</p>
+        ) : (
+          <div className="hotels-grid">
+            {featuredHotels.map((h) => (
+              <div className="hotel-card" key={h.id}>
+                <div className="hotel-card__img-wrap">
+                  <img
+                    src={h.image_url || "https://via.placeholder.com/400x250?text=No+Image"}
+                    alt={h.name}
+                  />
+                  <span className="hotel-card__tag">{h.city}</span>
+                  <button className="hotel-card__wishlist" aria-label="Simpan">♡</button>
                 </div>
-                <h3 className="hotel-card__name">{h.name}</h3>
-                <p className="hotel-card__location">📍 {h.location}</p>
-                <div className="hotel-card__footer">
-                  <div>
-                    <span className="hotel-card__price">{formatPrice(h.price)}</span>
-                    <span className="hotel-card__per"> / malam</span>
+                <div className="hotel-card__body">
+                  <h3 className="hotel-card__name">{h.name}</h3>
+                  <p className="hotel-card__location">📍 {h.city}</p>
+                  <p className="hotel-card__location">{h.address}</p>
+                  <div className="hotel-card__footer">
+                    <button className="hotel-card__btn">Lihat Detail</button>
                   </div>
-                  <button className="hotel-card__btn" onClick={() => navigate("/payment", { state: { hotel: h } })}>Pesan</button>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* ── KENAPA GRINDBOYS ── */}
       <section className="section">
-        <div className="section__header center animate-fade-up delay-4">
+        <div className="section__header center">
           <div>
             <p className="section__eyebrow">Keunggulan Kami</p>
             <h2 className="section__title">Mengapa Memilih GrindBoys?</h2>
@@ -215,7 +185,7 @@ export default function Home() {
 
       {/* ── CTA BANNER ── */}
       <section className="cta-banner">
-        <div className="cta-banner__content animate-fade-up delay-5">
+        <div className="cta-banner__content">
           <h2>Dapatkan Diskon 20% untuk Pemesanan Pertama!</h2>
           <p>Daftar sekarang dan nikmati penawaran eksklusif untuk member baru GrindBoys.</p>
           <div className="cta-banner__actions">

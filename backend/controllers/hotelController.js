@@ -26,6 +26,32 @@ exports.getHotels = async (req, res) => {
   }
 };
 
+// 🌟 GET hotel unggulan untuk halaman utama
+exports.getFeaturedHotels = async (req, res) => {
+  try {
+    const results = await Hotel.getFeatured();
+
+    const updatedResults = results.map(hotel => ({
+      ...hotel,
+      image_url: hotel.image_url
+        ? `${req.protocol}://${req.get("host")}/uploads/${hotel.image_url}`
+        : null
+    }));
+
+    res.json({
+      status: "success",
+      data: updatedResults
+    });
+
+  } catch (error) {
+    console.error("GET FEATURED HOTELS ERROR:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Terjadi kesalahan server"
+    });
+  }
+};
+
 // ➕ CREATE hotel (admin only + upload gambar)
 exports.createHotel = async (req, res) => {
   try {
@@ -71,7 +97,7 @@ exports.createHotel = async (req, res) => {
   }
 };
 
-// UPDATE HOTEL
+// ✏️ UPDATE HOTEL
 exports.updateHotel = async (req, res) => {
   try {
     const id = req.params.id;
@@ -107,7 +133,7 @@ exports.updateHotel = async (req, res) => {
   }
 };
 
-// DELETE HOTEL
+// ❌ DELETE HOTEL
 exports.deleteHotel = async (req, res) => {
   try {
     const id = req.params.id;
@@ -134,6 +160,7 @@ exports.deleteHotel = async (req, res) => {
     });
   }
 };
+
 // 🔍 DETAIL HOTEL
 exports.getHotelDetail = async (req, res) => {
   try {
@@ -148,7 +175,6 @@ exports.getHotelDetail = async (req, res) => {
       });
     }
 
-    // image url hotel
     if (hotel.hotel.image_url) {
       hotel.hotel.image_url =
         `${req.protocol}://${req.get("host")}/uploads/${hotel.hotel.image_url}`;
@@ -161,7 +187,6 @@ exports.getHotelDetail = async (req, res) => {
 
   } catch (error) {
     console.error("DETAIL HOTEL ERROR:", error);
-
     res.status(500).json({
       status: "error",
       message: error.message
