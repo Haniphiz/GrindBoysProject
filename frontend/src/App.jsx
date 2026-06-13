@@ -8,15 +8,16 @@ import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 import Home from "./pages/home/Home";
 import Hotel from "./pages/hotel/Hotel";
 import Login from "./pages/login/Login";
-import Register from "./pages/register/Register"; // TAMBAHKAN INI
+import Register from "./pages/register/Register";
 import Payment from "./pages/payment/Payment";
+import Profile from "./pages/profile/Profile"; // TAMBAHKAN INI
 
 function App() {
   return (
     <Routes>
       {/* PUBLIC ROUTES: Tanpa Navbar/Footer */}
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} /> {/* TAMBAHKAN INI */}
+      <Route path="/register" element={<Register />} />
 
       {/* LAYOUT ROUTES: Dengan Navbar & Footer */}
       <Route path="/" element={<Layout />}>
@@ -30,6 +31,16 @@ function App() {
           element={
             <ProtectedRoute>
               <Payment />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* TAMBAHKAN ROUTE PROFILE DI SINI */}
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           } 
         />

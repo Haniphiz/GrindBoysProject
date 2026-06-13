@@ -1,29 +1,27 @@
 const jwt = require("jsonwebtoken");
 
-const auth = (req, res, next) => {
-  const header = req.headers.authorization;
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
-  if (!header) {
+  if (!token) {
     return res.status(401).json({
       status: "error",
-      message: "Username atau password salah"
+      message: "Akses ditolak, token tidak ditemukan"
     });
   }
 
-  const token = header.split(" ")[1];
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    req.user = decoded; // 🔥 ini penting
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = verified; // Menyisipkan data token (id, email, role) ke req.user
     next();
-
-  } catch (err) {
-    return res.status(401).json({
+  } catch (error) {
+    console.error("JWT VERIFICATION ERROR:", error);
+    return res.status(403).json({
       status: "error",
-      message: "Token tidak valid"
+      message: "Token tidak valid atau sudah kedaluwarsa"
     });
   }
 };
 
-module.exports = auth;
+module.exports = verifyToken;

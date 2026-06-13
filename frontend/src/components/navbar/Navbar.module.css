@@ -129,8 +129,88 @@
 }
 
 /* =========================================
-   BREAKPOINT MOBILE FIRST (Slide 8)
-   Ubah jadi Sidebar di HP
+   SHARED PROFILE STYLES (Berlaku Global)
+   ========================================= */
+.profileContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.avatarBtn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  background-color: #ff7a00; /* Warna background avatar (bisa diganti sesukamu) */
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.avatarBtn:hover {
+  transform: scale(1.05);
+  border-color: #ffffff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+}
+
+
+.dropdownHeader {
+  display: flex;
+  flex-direction: column;
+  padding: 4px 8px;
+  text-align: left;
+}
+
+.dropdownName {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.dropdownEmail {
+  font-size: 0.8rem;
+  margin-top: 2px;
+}
+
+.divider {
+  border: 0;
+  margin: 12px 0;
+}
+
+.dropdownLogoutBtn {
+  background: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+/* Animasi Muncul Dropdown */
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* =========================================
+   BREAKPOINT MOBILE FIRST (Max 768px)
    ========================================= */
 @media (max-width: 768px) {
   .navbar {
@@ -150,12 +230,14 @@
     height: 100vh;
     background: rgba(15, 23, 42, 0.98);
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 32px;
+    gap: 24px; /* Sedikit dikurangi agar muat dengan dropdown */
     transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: -10px 0 30px rgba(0,0,0,0.4);
+    padding: 20px 0;
   }
 
   /* Class active untuk buka sidebar */
@@ -175,11 +257,50 @@
     color: #fff;
     background: #3f45b5;
   }
+
+  /* --- Penyesuaian Profil Dropdown di Mobile Sidebar --- */
+  .profileContainer {
+    width: 80%;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .dropdownMenu {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-sizing: border-box;
+  }
+
+  .dropdownName { color: #ffffff; }
+  .dropdownEmail { color: rgba(255, 255, 255, 0.6); }
+  
+  .divider {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .dropdownItem {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .dropdownLogoutBtn {
+    width: 100%;
+  }
 }
 
 /* =========================================
-   BREAKPOINT DESKTOP (Default di atas 768px)
-   Hamburger di-hide, Links jadi baris horizontal
+   BREAKPOINT DESKTOP (Di atas 768px)
    ========================================= */
 @media (min-width: 769px) {
   .hamburger {
@@ -194,5 +315,50 @@
     backdrop-filter: none;
     flex-direction: row;
     box-shadow: none;
+  }
+
+  /* --- Penyesuaian Profil Dropdown di Desktop --- */
+  .dropdownMenu {
+    position: absolute;
+    top: 55px;
+    right: 0;
+    /* Efek Glassmorphic Menyesuaikan Tema Lu */
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    min-width: 240px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    animation: dropdownFade 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .dropdownName { color: #1e293b; }
+  .dropdownEmail { color: #64748b; }
+
+  .divider {
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .dropdownItem {
+    color: #334155;
+    text-decoration: none;
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+  }
+
+  .dropdownItem:hover {
+    background: rgba(63, 69, 181, 0.1);
+    color: #3f45b5;
+    padding-left: 16px; /* Efek geser dikit pas di-hover */
+  }
+
+  .dropdownLogoutBtn:hover {
+    background: #dc2626;
   }
 }
