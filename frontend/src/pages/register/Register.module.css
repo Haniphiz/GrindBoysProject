@@ -1,0 +1,176 @@
+/* =========================================
+   PERFECT CENTER CONTAINER
+   ========================================= */
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  padding: 24px;
+  margin: 0;
+}
+
+/* =========================================
+   CARD FORM (Tidak terpojok)
+   ========================================= */
+.card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 440px;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+}
+
+/* =========================================
+   TYPOGRAPHY
+   ========================================= */
+.header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.header h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.header p {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* =========================================
+   ERROR BOX
+   ========================================= */
+.errorBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fef2f2;
+  color: #b91c1c;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 24px;
+  border: 1px solid #fecaca;
+}
+
+/* =========================================
+   FORM ELEMENTS
+   ========================================= */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputGroup label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.inputGroup input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  font-size: 15px;
+  color: #0f172a;
+  background: #f8fafc;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box; /* Mencegah input melebar keluar card */
+}
+
+.inputGroup input:focus {
+  border-color: #2563eb;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.inputGroup input::placeholder {
+  color: #94a3b8;
+}
+
+/* =========================================
+   BUTTON
+   ========================================= */
+.btnRegister {
+  width: 100%;
+  padding: 16px;
+  background: #2563eb;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: all 0.2s ease;
+  min-height: 54px;
+}
+
+.btnRegister:hover:not(:disabled) {
+  background: #1d4ed8;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+.btnRegister:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btnRegister:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   FOOTER LINK
+   ========================================= */
+.footer {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.footer a {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+/* =========================================
+   RESPONSIVE: TABLET & DESKTOP
+   (Hanya menyesuaikan sedikit padding)
+   ========================================= */
+@media (min-width: 768px) {
+  .card {
+    padding: 48px;
+  }
+  
+  .header h2 {
+    font-size: 2rem;
+  }
+}
