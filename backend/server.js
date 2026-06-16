@@ -1,28 +1,31 @@
-const express = require("express");
-const cors = require("cors");
+// ⚠️ BARIS INI HARUS PALING ATAS, SEBELUM REQUIRE LAINNYA
+require('dotenv').config();
 
-// IMPORT SEMUA ROUTES
-const authRoutes = require("./routes/authRoutes");
-const hotelRoutes = require("./routes/hotelRoutes");
-const bookingRoutes = require("./routes/bookingRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
-
-// LOAD ENV DARI ROOT FOLDER
-require("dotenv").config({ path: require("path").join(__dirname, '..', '.env') });
+const express = require('express');
+const cors = require('cors');
+// ... require lainnya
 
 const app = express();
 
-// MIDDLEWARE WAJIB PALING ATAS
-app.use(cors());
+// ── MIDDLEWARE ──
+app.use(cors({
+  origin: "http://localhost:5173", // URL Vite frontend kamu
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"] // ← PENTING: Authorization harus diizinkan
+}));
 app.use(express.json());
 
-// DAFTARKAN SEMUA ROUTE
-app.use("/api/auth", authRoutes);
-app.use("/api/hotels", hotelRoutes);
-app.use("/api/bookings", bookingRoutes);
-app.use("/api/payments", paymentRoutes);
+// ── ROUTES ──
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/hotels', require('./routes/hotelRoutes'));
+app.use('/api/rooms', require('./routes/roomRoutes'));
+app.use('/api/bookings', require('./routes/bookingRoutes'));
+app.use('/api/payments', require('./routes/paymentRoutes'));
+app.use('/api/reviews', require('./routes/reviewRoutes'));
 
-// Jalankan di port 3000 sesuai setup lu
-app.listen(3000, () => {
-  console.log("Server running on port 3000");
+// ── START SERVER ──
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`✅ Server berjalan di http://localhost:${PORT}`);
+  console.log(`🔑 JWT_SECRET terload: ${process.env.JWT_SECRET ? "YA" : "TIDAK - PERINGATAN!"}`);
 });

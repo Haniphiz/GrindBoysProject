@@ -10,24 +10,25 @@ import Hotel from "./pages/hotel/Hotel";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Payment from "./pages/payment/Payment";
-import Profile from "./pages/profile/Profile"; // TAMBAHKAN INI
+import Profile from "./pages/profile/Profile";
 import PaymentSuccess from "./pages/payment/PaymentSuccess";
+import Booking from "./pages/booking/Booking";
 
 function App() {
   return (
     <Routes>
-      {/* PUBLIC ROUTES: Tanpa Navbar/Footer */}
+      {/* ═══ PUBLIC: Tanpa Layout ═══ */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* LAYOUT ROUTES: Dengan Navbar & Footer */}
+      {/* ═══ DENGAN LAYOUT (Navbar + Footer) ═══ */}
       <Route path="/" element={<Layout />}>
-        {/* PUBlik */}
         <Route index element={<Home />} />
         <Route path="/hotel" element={<Hotel />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/booking" element={<Booking />} />
 
-        {/* PROTECTED */}
+        {/* ═══ PROTECTED: Butuh Login ═══ */}
         <Route
           path="/payment"
           element={
@@ -36,8 +37,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* TAMBAHKAN ROUTE PROFILE DI SINI */}
         <Route
           path="/profile"
           element={
