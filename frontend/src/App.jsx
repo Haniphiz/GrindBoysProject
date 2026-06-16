@@ -11,41 +11,83 @@ import Hotel from "./pages/hotel/Hotel";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Payment from "./pages/payment/Payment";
-import Profile from "./pages/profile/Profile"; // TAMBAHKAN INI
+import Profile from "./pages/profile/Profile";
+
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminRoom from "./pages/admin/AdminRoom";
+import AdminHotel from "./pages/admin/AdminHotel";
 
 function App() {
   return (
     <Routes>
-      {/* PUBLIC ROUTES: Tanpa Navbar/Footer */}
+
+      {/* ========================= */}
+      {/* PUBLIC ROUTES */}
+      {/* ========================= */}
+
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
-      {/* LAYOUT ROUTES: Dengan Navbar & Footer */}
+      {/* ========================= */}
+      {/* USER LAYOUT */}
+      {/* ========================= */}
+
       <Route path="/" element={<Layout />}>
-        {/* PUBlik */}
+
+        {/* Home */}
         <Route index element={<Home />} />
-        <Route path="/hotel" element={<Hotel />} />
-        
-        {/* PROTECTED */}
-        <Route 
-          path="/payment" 
+
+        {/* Hotel */}
+        <Route path="hotel" element={<Hotel />} />
+
+        {/* Payment */}
+        <Route
+          path="payment"
           element={
             <ProtectedRoute>
               <Payment />
             </ProtectedRoute>
           }
         />
-        
-        {/* TAMBAHKAN ROUTE PROFILE DI SINI */}
-        <Route 
-          path="/profile" 
+
+        {/* Profile */}
+        <Route
+          path="profile"
           element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
-          } 
+          }
         />
+
       </Route>
+
+      {/* ========================= */}
+      {/* ADMIN LAYOUT */}
+      {/* ========================= */}
+
+  <Route
+  path="/admin"
+  element={
+    <ProtectedRoute role="admin">
+      <AdminLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route
+    index
+    element={<AdminDashboard />}
+  />
+<Route
+  path="hotels"
+  element={<AdminHotel />}
+/>
+  <Route
+    path="rooms"
+    element={<AdminRoom />}
+  />
+</Route>
     </Routes>
   );
 }
