@@ -85,7 +85,7 @@ export default function Navbar() {
           
           {user ? (
             <>
-              <li><Link to="/payment" className={styles.link}>Booking</Link></li>
+              <li><Link to="/booking" className={styles.link}>Booking</Link></li>
               
               {/* Profile Avatar Container */}
               <li className={styles.profileContainer} ref={dropdownRef}>

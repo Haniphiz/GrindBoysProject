@@ -27,10 +27,10 @@ const getBookings = async (req, res) => {
   }
 };
 
-// ➕ POST booking baru (VERSI MINIMALIS AMAN)
+// ➕ POST booking baru
 const addBooking = async (req, res) => {
   try {
-    const { room_id } = req.body; 
+    const { room_id, total_price } = req.body;
     const user_id = req.user.id;
 
     if (!room_id) {
@@ -40,21 +40,19 @@ const addBooking = async (req, res) => {
       });
     }
 
-    const [room] = await db.query("SELECT * FROM rooms WHERE id = ?", [room_id]);
-    if (room.length === 0) {
-      return res.status(404).json({ status: "error", message: "Room tidak ditemukan" });
-    }
-    const total_price = room[0].price;
+    // Ambil total_price dari frontend
+    // (karena kamar di-generate di frontend, bukan dari tabel rooms)
+    const finalPrice = total_price || 0;
 
     const [result] = await db.query(
       `INSERT INTO bookings (user_id, room_id, total_price) VALUES (?, ?, ?)`,
-      [user_id, room_id, total_price]
+      [user_id, room_id, finalPrice]
     );
 
     res.status(201).json({
       status: "success",
       message: "Booking berhasil ditambahkan",
-      data: { booking_id: result.insertId, total_price }
+      data: { booking_id: result.insertId, total_price: finalPrice }
     });
   } catch (error) {
     console.error(error);
