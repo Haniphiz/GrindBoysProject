@@ -11,6 +11,7 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Payment from "./pages/payment/Payment";
 import Profile from "./pages/profile/Profile"; // TAMBAHKAN INI
+import PaymentSuccess from "./pages/payment/PaymentSuccess";
 
 function App() {
   return (
@@ -24,25 +25,26 @@ function App() {
         {/* PUBlik */}
         <Route index element={<Home />} />
         <Route path="/hotel" element={<Hotel />} />
-        
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+
         {/* PROTECTED */}
-        <Route 
-          path="/payment" 
+        <Route
+          path="/payment"
           element={
             <ProtectedRoute>
               <Payment />
             </ProtectedRoute>
-          } 
+          }
         />
-        
+
         {/* TAMBAHKAN ROUTE PROFILE DI SINI */}
-        <Route 
-          path="/profile" 
+        <Route
+          path="/profile"
           element={
             <ProtectedRoute>
               <Profile />
             </ProtectedRoute>
-          } 
+          }
         />
       </Route>
     </Routes>
