@@ -1,24 +1,26 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { jwtDecode } from "jwt-decode";
 
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, role }) => {
   const { token, isLoaded } = useAuth();
 
-  // Conditional Rendering: Tampilkan loading sampai state selesai cek localStorage (Slide 12)
   if (!isLoaded) {
-    return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontSize: '1.2rem' }}>
-        Memeriksa autentikasi...
-      </div>
-    );
+    return <div>Loading...</div>;
   }
 
-  // Jika tidak ada token, lempar ke halaman login (Slide 13)
   if (!token) {
     return <Navigate to="/login" replace />;
   }
 
-  // Jika ada token, render halaman yang dilindungi
+  if (role) {
+    const decoded = jwtDecode(token);
+
+    if (decoded.role !== role) {
+      return <Navigate to="/" replace />;
+    }
+  }
+
   return children;
 };
 

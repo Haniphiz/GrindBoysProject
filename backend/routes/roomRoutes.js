@@ -1,15 +1,47 @@
 const express = require("express");
-const router = express.Router();
 
-const { getRooms, createRoom } = require("../controllers/roomController");
+const router = express.Router();
 
 const auth = require("../middleware/auth");
 const authorize = require("../middleware/authorize");
+const upload = require("../middleware/upload");
 
-// semua user bisa lihat kamar
+const {
+  getRooms,
+  getRoomById,
+  createRoom,
+  updateRoom,
+  deleteRoom
+} = require("../controllers/roomController");
+
 router.get("/", getRooms);
 
-// 🔥 hanya admin
-router.post("/", auth, authorize("admin"), createRoom);
+router.get(
+  "/:id",
+  getRoomById
+);
+
+router.post(
+  "/",
+  auth,
+  authorize("admin"),
+  upload.single("image"),
+  createRoom
+);
+
+router.put(
+  "/:id",
+  auth,
+  authorize("admin"),
+  upload.single("image"),
+  updateRoom
+);
+
+router.delete(
+  "/:id",
+  auth,
+  authorize("admin"),
+  deleteRoom
+);
 
 module.exports = router;

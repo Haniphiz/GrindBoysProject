@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import styles from "./Login.module.css";
+import { jwtDecode } from "jwt-decode";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -31,8 +32,19 @@ export default function Login() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Login gagal");
 
-      login(data.token, data.user || { email: formData.email, role: "user" });
-      navigate("/");
+      const decoded = jwtDecode(data.token);
+
+login(data.token, {
+  id: decoded.id,
+  email: decoded.email,
+  role: decoded.role
+});
+
+if (decoded.role === "admin") {
+  navigate("/admin");
+} else {
+  navigate("/");
+}
 
     } catch (err) {
       setError(err.message);
