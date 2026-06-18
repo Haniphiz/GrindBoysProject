@@ -2,7 +2,6 @@ import { Routes, Route } from "react-router-dom";
 
 import Layout from "./components/Layout/Layout";
 import AdminLayout from "./components/Layout/AdminLayout";
-// Protected Route
 import ProtectedRoute from "./components/protectedRoute/ProtectedRoute";
 
 // User Pages
@@ -12,6 +11,7 @@ import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
 import Payment from "./pages/payment/Payment";
 import Profile from "./pages/profile/Profile";
+import Booking from "./pages/booking/Booking"; 
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -21,27 +21,20 @@ import AdminHotel from "./pages/admin/AdminHotel";
 function App() {
   return (
     <Routes>
-
       {/* ========================= */}
       {/* PUBLIC ROUTES */}
       {/* ========================= */}
-
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
       {/* ========================= */}
       {/* USER LAYOUT */}
       {/* ========================= */}
-
       <Route path="/" element={<Layout />}>
-
-        {/* Home */}
         <Route index element={<Home />} />
-
-        {/* Hotel */}
         <Route path="hotel" element={<Hotel />} />
-
-        {/* Payment */}
+        <Route path="booking" element={<Booking />} />
+        
         <Route
           path="payment"
           element={
@@ -50,8 +43,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* Profile */}
         <Route
           path="profile"
           element={
@@ -60,34 +51,23 @@ function App() {
             </ProtectedRoute>
           }
         />
-
       </Route>
 
       {/* ========================= */}
       {/* ADMIN LAYOUT */}
       {/* ========================= */}
-
-  <Route
-  path="/admin"
-  element={
-    <ProtectedRoute role="admin">
-      <AdminLayout />
-    </ProtectedRoute>
-  }
->
-  <Route
-    index
-    element={<AdminDashboard />}
-  />
-<Route
-  path="hotels"
-  element={<AdminHotel />}
-/>
-  <Route
-    path="rooms"
-    element={<AdminRoom />}
-  />
-</Route>
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute role="admin">
+            <AdminLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="hotels" element={<AdminHotel />} />
+        <Route path="rooms" element={<AdminRoom />} />
+      </Route>
     </Routes>
   );
 }
