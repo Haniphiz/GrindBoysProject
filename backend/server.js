@@ -8,7 +8,8 @@ const hotelRoutes = require("./routes/hotelRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const paymentRoutes = require("./routes/paymentRoutes");
 const roomRoutes = require("./routes/roomRoutes");
-
+const adminRoutes =
+  require("./routes/adminRoutes");
 // ENV
 require("dotenv").config({
   path: path.join(__dirname, "..", ".env")
@@ -34,7 +35,10 @@ app.use("/api/hotels", hotelRoutes);
 app.use("/api/bookings", bookingRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/rooms", roomRoutes);
-
+app.use(
+  "/api/admin",
+  adminRoutes
+);
 // START SERVER
 app.listen(3000, () => {
   console.log(
