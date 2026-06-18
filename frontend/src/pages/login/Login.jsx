@@ -34,17 +34,18 @@ export default function Login() {
 
       const decoded = jwtDecode(data.token);
 
-login(data.token, {
-  id: decoded.id,
-  email: decoded.email,
-  role: decoded.role
-});
+      login(data.token, {
+        id: decoded.id,
+        email: decoded.email,
+        role: decoded.role
+      });
 
-if (decoded.role === "admin") {
-  navigate("/admin");
-} else {
-  navigate("/");
-}
+      // PERBAIKAN: Tambahkan pengecekan "super_admin"
+      if (decoded.role === "admin" || decoded.role === "super_admin") {
+        navigate("/admin");
+      } else {
+        navigate("/");
+      }
 
     } catch (err) {
       setError(err.message);
@@ -56,7 +57,6 @@ if (decoded.role === "admin") {
   return (
     <div className={styles.container}>
       
-      {/* TOMBOL KEMBALI DI POJOK KIRI ATAS */}
       <button className={styles.btnBack} onClick={() => navigate(-1)}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <line x1="19" y1="12" x2="5" y2="12"></line>
@@ -65,7 +65,6 @@ if (decoded.role === "admin") {
         Kembali
       </button>
 
-      {/* BANNER KIRI */}
       <div className={styles.banner}>
         <div className={styles.bannerOverlay}>
           <div className={styles.bannerContent}>
@@ -89,7 +88,6 @@ if (decoded.role === "admin") {
         </div>
       </div>
 
-      {/* FORM KANAN */}
       <div className={styles.formSection}>
         <div className={styles.formCard}>
           
@@ -140,7 +138,6 @@ if (decoded.role === "admin") {
                   required 
                   autoComplete="current-password"
                 />
-                {/* TOMBOL HIDE/VIEW PAKE SVG HITAM STANDAR */}
                 <button 
                   type="button" 
                   className={styles.togglePass} 
@@ -148,13 +145,11 @@ if (decoded.role === "admin") {
                   aria-label="Toggle password visibility"
                 >
                   {showPassword ? (
-                    // IKON MATA TERTUTUP (Slash)
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
                       <line x1="1" y1="1" x2="23" y2="23"/>
                     </svg>
                   ) : (
-                    // IKON MATA TERBUKA
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                       <circle cx="12" cy="12" r="3"/>

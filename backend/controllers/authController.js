@@ -87,12 +87,13 @@ exports.login = async (req, res) => {
       });
     }
 
-    // 🔑 GENERATE JWT
+    // 🔑 GENERATE JWT — 📌 TAMBAH hotel_id DI SINI
     const token = jwt.sign(
       {
         id: user.id,
         email: user.email,
-        role: user.role
+        role: user.role,
+        hotel_id: user.hotel_id        // 📌 BARU: null untuk user biasa, berisi ID hotel untuk admin hotel
       },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }

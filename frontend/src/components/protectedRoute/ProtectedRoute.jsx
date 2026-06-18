@@ -15,8 +15,11 @@ const ProtectedRoute = ({ children, role }) => {
 
   if (role) {
     const decoded = jwtDecode(token);
+    
+    // PERBAIKAN: Biar bisa menerima teks ("admin") maupun array (["admin", "super_admin"])
+    const allowedRoles = Array.isArray(role) ? role : [role];
 
-    if (decoded.role !== role) {
+    if (!allowedRoles.includes(decoded.role)) {
       return <Navigate to="/" replace />;
     }
   }

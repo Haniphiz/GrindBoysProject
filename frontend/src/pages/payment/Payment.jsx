@@ -95,19 +95,49 @@ export default function Payment() {
   const prevStep = () => { if (activeStep > 1) setActiveStep(activeStep - 1); };
 
   // ── Bayar ──
+  // ── Bayar ──
   const handlePayNow = async () => {
     setIsProcessing(true);
     try {
-      const bRes = await fetch("http://localhost:3000/api/bookings", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` }, body: JSON.stringify({ room_id: selectedRoom.id }) });
+      // 1. KIRIM DATA BOOKING YANG LENGKAP
+      const bRes = await fetch("http://localhost:3000/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({
+          room_id: selectedRoom.id,
+          total_price: grandTotal, // <- TAMBAHKAN INI (Harga + Pajak)
+          check_in: formData.checkIn, // <- TAMBAHKAN INI
+          check_out: formData.checkOut, // <- TAMBAHKAN INI
+          guests: 1, // <- TAMBAHKAN INI (Bisa diubah jika ada input jumlah tamu)
+          special_request: formData.specialRequest // <- TAMBAHKAN INI
+        })
+      });
       const bData = await bRes.json();
       if (!bRes.ok) throw new Error(bData.message || "Gagal membuat booking");
 
-      const pRes = await fetch("http://localhost:3000/api/payments", { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${localStorage.getItem("token")}` }, body: JSON.stringify({ booking_id: bData.data?.booking_id, payment_method: paymentMethod }) });
+      // 2. KIRIM DATA PAYMENT
+      const pRes = await fetch("http://localhost:3000/api/payments", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        },
+        body: JSON.stringify({
+          booking_id: bData.data?.booking_id,
+          payment_method: paymentMethod
+        })
+      });
       const pData = await pRes.json();
       if (!pRes.ok) throw new Error(pData.message || "Gagal memproses pembayaran");
 
       navigate("/payment-success", { state: { payment: pData.data, hotel, room: selectedRoom, formData, grandTotal } });
-    } catch (error) { alert(`Error: ${error.message}`); setIsProcessing(false); }
+    } catch (error) {
+      alert(`Error: ${error.message}`);
+      setIsProcessing(false);
+    }
   };
 
   const steps = ["Pilih Kamar", "Data Tamu", "Pembayaran", "Konfirmasi"];

@@ -4,7 +4,7 @@ const db = mysql.createPool({
   host: 'localhost',
   user: 'root',
   password: '',
-  database: 'booking_hotel'
+  database: 'bookinghotel'
 });
 
 // Optional: test koneksi
