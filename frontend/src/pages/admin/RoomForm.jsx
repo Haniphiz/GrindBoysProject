@@ -162,102 +162,139 @@ function RoomForm({
 
     };
 
+  const handleCancel = () => {
+
+    setSelectedRoom(null);
+
+    setFormData({
+      hotel_id: "",
+      room_type: "",
+      price: "",
+      capacity: "",
+      description: ""
+    });
+
+    setImage(null);
+
+  };
+
   return (
-    <form onSubmit={handleSubmit}>
+    <form className="room-form" onSubmit={handleSubmit}>
 
-      <select
-        name="hotel_id"
-        value={formData.hotel_id}
-        onChange={handleChange}
+      <span
+        className={
+          selectedRoom
+            ? "room-form__tag room-form__tag--edit"
+            : "room-form__tag room-form__tag--new"
+        }
       >
-        <option value="">
-          Pilih Hotel
-        </option>
+        {selectedRoom ? "Mengedit" : "Entri Baru"}
+      </span>
 
-        {hotels.map((hotel) => (
+      <h2 className="room-form__heading">
+        {selectedRoom ? "Perbarui Kamar" : "Tambah Kamar"}
+      </h2>
 
-          <option
-            key={hotel.id}
-            value={hotel.id}
-          >
-            {hotel.name}
+      <div className="room-form__field">
+        <label className="room-form__label">Hotel</label>
+        <select
+          name="hotel_id"
+          value={formData.hotel_id}
+          onChange={handleChange}
+        >
+          <option value="">
+            Pilih Hotel
           </option>
 
-        ))}
-      </select>
+          {hotels.map((hotel) => (
 
-      <input
-        type="text"
-        name="room_type"
-        placeholder="Tipe Kamar"
-        value={formData.room_type}
-        onChange={handleChange}
-      />
+            <option
+              key={hotel.id}
+              value={hotel.id}
+            >
+              {hotel.name}
+            </option>
 
-      <input
-        type="number"
-        name="price"
-        placeholder="Harga"
-        value={formData.price}
-        onChange={handleChange}
-      />
+          ))}
+        </select>
+      </div>
 
-      <input
-        type="number"
-        name="capacity"
-        placeholder="Kapasitas"
-        value={formData.capacity}
-        onChange={handleChange}
-      />
+      <div className="room-form__field">
+        <label className="room-form__label">Tipe Kamar</label>
+        <input
+          type="text"
+          name="room_type"
+          placeholder="cth. Deluxe Twin"
+          value={formData.room_type}
+          onChange={handleChange}
+        />
+      </div>
 
-      <textarea
-        name="description"
-        placeholder="Deskripsi"
-        value={formData.description}
-        onChange={handleChange}
-      />
+      <div className="room-form__row">
+        <div className="room-form__field">
+          <label className="room-form__label">Harga / malam</label>
+          <input
+            type="number"
+            name="price"
+            placeholder="450000"
+            value={formData.price}
+            onChange={handleChange}
+          />
+        </div>
 
-      <input
-        type="file"
-        onChange={(e) =>
-          setImage(
-            e.target.files[0]
-          )
-        }
-      />
+        <div className="room-form__field">
+          <label className="room-form__label">Kapasitas</label>
+          <input
+            type="number"
+            name="capacity"
+            placeholder="2"
+            value={formData.capacity}
+            onChange={handleChange}
+          />
+        </div>
+      </div>
 
-      <button type="submit">
+      <div className="room-form__field">
+        <label className="room-form__label">Deskripsi</label>
+        <textarea
+          name="description"
+          placeholder="Fasilitas, pemandangan, catatan lain..."
+          value={formData.description}
+          onChange={handleChange}
+        />
+      </div>
 
-        {selectedRoom
-          ? "Update Kamar"
-          : "Tambah Kamar"}
+      <div className="room-form__field">
+        <label className="room-form__label">Foto Kamar</label>
+        <div className="room-form__file">
+          <input
+            type="file"
+            onChange={(e) =>
+              setImage(
+                e.target.files[0]
+              )
+            }
+          />
+        </div>
+      </div>
 
-      </button>
-
-      {selectedRoom && (
-
-        <button
-          type="button"
-          onClick={() => {
-
-            setSelectedRoom(null);
-
-            setFormData({
-              hotel_id: "",
-              room_type: "",
-              price: "",
-              capacity: "",
-              description: ""
-            });
-
-            setImage(null);
-
-          }}
-        >
-          Cancel
+      <div className="room-form__actions">
+        <button type="submit" className="btn btn--primary">
+          {selectedRoom
+            ? "Update Kamar"
+            : "Tambah Kamar"}
         </button>
 
-      )}
+        {selectedRoom && (
+          <button
+            type="button"
+            className="btn btn--ghost"
+            onClick={handleCancel}
+          >
+            Batal
+          </button>
+        )}
+      </div>
 
     </form>
   );
