@@ -44,106 +44,91 @@ function RoomTable({
   };
 
   return (
-    <div
-      style={{
-        overflowX: "auto",
-        marginTop: "20px"
-      }}
-    >
-      <table
-        border="1"
-        cellPadding="10"
-        style={{
-          width: "100%",
-          borderCollapse: "collapse"
-        }}
-      >
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Gambar</th>
-            <th>Hotel</th>
-            <th>Tipe</th>
-            <th>Harga</th>
-            <th>Kapasitas</th>
-            <th>Deskripsi</th>
-            <th>Aksi</th>
-          </tr>
-        </thead>
-
-        <tbody>
-
-          {rooms.length === 0 ? (
+    <div className="room-table-wrap">
+      <div className="room-table-wrap__scroll">
+        <table className="room-table">
+          <thead>
             <tr>
-              <td
-                colSpan="8"
-                style={{
-                  textAlign: "center"
-                }}
-              >
-                Tidak ada data kamar
-              </td>
+              <th>ID</th>
+              <th>Gambar</th>
+              <th>Hotel</th>
+              <th>Tipe</th>
+              <th>Harga</th>
+              <th>Kapasitas</th>
+              <th>Deskripsi</th>
+              <th>Aksi</th>
             </tr>
-          ) : (
+          </thead>
 
-            rooms.map((room) => {
+          <tbody>
 
-              console.log(
-                "ROOM IMAGE:",
-                room.image_url
-              );
+            {rooms.length === 0 ? (
+              <tr>
+                <td colSpan="8">
+                  <div className="room-table__empty">
+                    <p className="room-table__empty-title">
+                      Belum ada kamar
+                    </p>
+                    <p>
+                      Tambahkan kamar pertama lewat formulir di samping.
+                    </p>
+                  </div>
+                </td>
+              </tr>
+            ) : (
 
-              return (
+              rooms.map((room) => (
+
                 <tr key={room.id}>
 
-                  <td>{room.id}</td>
+                  <td className="room-table__id">
+                    #{room.id}
+                  </td>
 
                   <td>
 
                     {room.image_url ? (
 
                       <img
+                        className="room-table__thumb"
                         src={room.image_url}
                         alt={room.room_type}
-                        width="100"
-                        height="70"
-                        style={{
-                          objectFit: "cover",
-                          borderRadius: "8px"
-                        }}
                         onError={(e) => {
-                          console.log(
-                            "Gagal load gambar:",
-                            room.image_url
-                          );
-
+                          e.target.onerror = null;
                           e.target.src =
-                            "https://via.placeholder.com/100x70?text=No+Image";
+                            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='70'%3E%3Crect width='100' height='70' fill='%23E6DFCD'/%3E%3Ctext x='50' y='38' font-size='10' fill='%2374808F' text-anchor='middle'%3ENo Image%3C/text%3E%3C/svg%3E";
                         }}
                       />
 
                     ) : (
 
-                      <img
-                        src="https://via.placeholder.com/100x70?text=No+Image"
-                        alt="No Image"
-                        width="100"
-                        height="70"
-                      />
+                      <div
+                        className="room-table__thumb"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "var(--line)",
+                          color: "var(--slate)",
+                          fontSize: "10px"
+                        }}
+                      >
+                        No Image
+                      </div>
 
                     )}
 
                   </td>
 
-                  <td>
+                  <td className="room-table__hotel">
                     {room.hotel_name}
                   </td>
 
-                  <td>
+                  <td className="room-table__type">
                     {room.room_type}
                   </td>
 
-                  <td>
+                  <td className="room-table__price">
                     Rp{" "}
                     {Number(
                       room.price
@@ -153,43 +138,45 @@ function RoomTable({
                   </td>
 
                   <td>
-                    {room.capacity}
-                    {" "}Orang
+                    <span className="room-table__pill">
+                      {room.capacity} Orang
+                    </span>
+                  </td>
+
+                  <td className="room-table__desc" title={room.description || "-"}>
+                    {room.description || "-"}
                   </td>
 
                   <td>
-                    {room.description ||
-                      "-"}
-                  </td>
+                    <div className="room-table__actions">
+                      <button
+                        className="btn btn--icon btn--edit"
+                        onClick={() => onEdit(room)}
+                      >
+                        Edit
+                      </button>
 
-                  <td>
-
-                    <button
-  onClick={() => onEdit(room)}
->
-  Edit
-</button>
-
-                    <button
-                      onClick={() =>
-                        handleDelete(
-                          room.id
-                        )
-                      }
-                    >
-                      Hapus
-                    </button>
-
+                      <button
+                        className="btn btn--icon btn--delete"
+                        onClick={() =>
+                          handleDelete(
+                            room.id
+                          )
+                        }
+                      >
+                        Hapus
+                      </button>
+                    </div>
                   </td>
 
                 </tr>
-              );
-            })
+              ))
 
-          )}
+            )}
 
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

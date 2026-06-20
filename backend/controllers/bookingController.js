@@ -1,14 +1,34 @@
+// backend/controllers/bookingController.js
+
 const db = require('../config/db');
 
-// 🔍 GET Riwayat Booking berdasarkan User Login (VERSI BERSIH & AMAN)
+// 🔍 GET Riwayat Booking berdasarkan User Login (dengan JOIN lengkap)
 const getBookings = async (req, res) => {
   try {
     const user_id = req.user.id;
 
     const [results] = await db.query(
-      `SELECT id AS booking_id, room_id, total_price 
-       FROM bookings 
-       WHERE user_id = ?`,
+      `SELECT 
+        b.id AS booking_id,
+        b.room_id,
+        b.check_in,
+        b.check_out,
+        b.total_price,
+        b.status,
+        b.created_at,
+        r.room_type,
+        r.price AS price_per_night,
+        r.capacity,
+        h.id AS hotel_id,
+        h.name AS hotel_name,
+        h.city AS location,
+        h.address,
+        h.image_url
+       FROM bookings b
+       JOIN rooms r ON b.room_id = r.id
+       JOIN hotels h ON r.hotel_id = h.id
+       WHERE b.user_id = ?
+       ORDER BY b.created_at DESC`,
       [user_id]
     );
 
@@ -29,7 +49,11 @@ const getBookings = async (req, res) => {
 // ➕ POST booking baru
 const addBooking = async (req, res) => {
   try {
+<<<<<<< HEAD
     const { room_id, total_price, check_in, check_out, guests, special_request } = req.body;
+=======
+    const { room_id, total_price, check_in, check_out } = req.body;
+>>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
     const user_id = req.user.id;
 
     if (!room_id) {
@@ -42,9 +66,15 @@ const addBooking = async (req, res) => {
     const finalPrice = total_price || 0;
 
     const [result] = await db.query(
+<<<<<<< HEAD
       `INSERT INTO bookings (user_id, room_id, total_price, check_in, check_out, guests, special_request) 
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [user_id, room_id, finalPrice, check_in, check_out, guests || 1, special_request || null]
+=======
+      `INSERT INTO bookings (user_id, room_id, total_price, check_in, check_out, status) 
+       VALUES (?, ?, ?, ?, ?, 'pending')`,
+      [user_id, room_id, finalPrice, check_in || null, check_out || null]
+>>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
     );
 
     res.status(201).json({
@@ -58,7 +88,60 @@ const addBooking = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 // ✅ COMPLETE BOOKING / CHECKOUT (dari sisi USER)
+const completeBooking = async (req, res) => {
+=======
+// ❌ CANCEL BOOKING
+const cancelBooking = async (req, res) => {
+>>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
+  try {
+    const booking_id = req.params.id;
+    const user_id = req.user.id;
+
+    const [bookingRows] = await db.query(
+      `SELECT * FROM bookings WHERE id = ? AND user_id = ?`,
+<<<<<<< HEAD
+=======
+      [booking_id, user_id]
+    );
+
+    if (bookingRows.length === 0) {
+      return res.status(404).json({
+        status: "error",
+        message: "Booking tidak ditemukan"
+      });
+    }
+
+    const booking = bookingRows[0];
+
+    if (booking.status === 'completed' || booking.status === 'cancelled') {
+      return res.status(400).json({
+        status: "error",
+        message: `Booking berstatus ${booking.status} tidak dapat dibatalkan`
+      });
+    }
+
+    await db.query(
+      `UPDATE bookings SET status = 'cancelled' WHERE id = ?`,
+      [booking_id]
+    );
+
+    res.json({
+      status: "success",
+      message: "Booking berhasil dibatalkan",
+      data: { booking_id, new_status: "cancelled" }
+    });
+  } catch (error) {
+    console.error("CANCEL BOOKING ERROR:", error);
+    res.status(500).json({
+      status: "error",
+      message: "Terjadi kesalahan server"
+    });
+  }
+};
+
+// ✅ COMPLETE BOOKING / CHECKOUT
 const completeBooking = async (req, res) => {
   try {
     const booking_id = req.params.id;
@@ -66,6 +149,7 @@ const completeBooking = async (req, res) => {
 
     const [bookingRows] = await db.query(
       `SELECT * FROM bookings WHERE id = ? AND user_id = ?`,
+>>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
       [booking_id, user_id]
     );
 
@@ -79,7 +163,14 @@ const completeBooking = async (req, res) => {
       return res.status(400).json({ status: "error", message: "Hanya booking berstatus confirmed yang dapat diselesaikan" });
     }
 
+<<<<<<< HEAD
     await db.query(`UPDATE bookings SET status = 'completed' WHERE id = ?`, [booking_id]);
+=======
+    await db.query(
+      `UPDATE bookings SET status = 'completed' WHERE id = ?`,
+      [booking_id]
+    );
+>>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
 
     res.json({
       status: "success",
@@ -88,6 +179,7 @@ const completeBooking = async (req, res) => {
     });
   } catch (error) {
     console.error("COMPLETE BOOKING ERROR:", error);
+<<<<<<< HEAD
     res.status(500).json({ status: "error", message: "Terjadi kesalahan server" });
   }
 };
@@ -183,6 +275,8 @@ const getAdminBookings = async (req, res) => {
     });
   } catch (error) {
     console.error("GET ADMIN BOOKINGS ERROR:", error);
+=======
+>>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
     res.status(500).json({
       status: "error",
       message: "Terjadi kesalahan server saat mengambil data booking"
@@ -190,6 +284,7 @@ const getAdminBookings = async (req, res) => {
   }
 };
 
+<<<<<<< HEAD
 // GET /api/bookings/admin/stats — Super Admin melihat statistik SEMUA hotel
 const getBookingStats = async (req, res) => {
   try {
@@ -354,4 +449,11 @@ module.exports = {
   rejectBooking,
   checkIn,
   checkOut
+=======
+module.exports = {
+  getBookings,
+  addBooking,
+  cancelBooking,
+  completeBooking
+>>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
 };

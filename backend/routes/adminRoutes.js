@@ -12,7 +12,7 @@ const {
 router.get(
   "/dashboard",
   auth,
-  authorize("admin"),
+  authorize(["admin", "super_admin"]), // <- Diubah agar Super Admin bisa akses
   getDashboardStats
 );
 
