@@ -1,811 +1,993 @@
-/* ═══════════════════════════════════════════════════════════
-   PAYMENT — Konsisten dengan Home.css (BEM, warna, spacing)
-   ═══════════════════════════════════════════════════════════ */
-
-/* ── SHARED (sama seperti Home) ── */
-.section__eyebrow {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: #10b981;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 0 0 4px 0;
-}
-
-.section__title {
-  font-size: 1.6rem;
-  font-weight: 800;
-  color: #0f172a;
-  margin: 0;
-  line-height: 1.3;
-}
-
-/* ── BASE ── */
-.payment {
+/* ═══════════════════════════════════════
+   PAGE
+   ═══════════════════════════════════════ */
+.pay-page {
   min-height: 100vh;
   background: #f8fafc;
-  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
 }
 
-/* ── STEP INDICATOR ── */
-.payment__steps {
-  background: #fff;
+/* ═══════════════════════════════════════
+   EMPTY STATE
+   ═══════════════════════════════════════ */
+.pay-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  padding: 24px;
+  text-align: center;
+  gap: 16px;
+}
+
+.pay-empty-title {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.pay-empty-text {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin: 0;
+  max-width: 360px;
+}
+
+.pay-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px 24px;
+  background: #ffffff;
+  color: #0f172a;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pay-empty-btn:hover {
+  border-color: #10b981;
+  color: #10b981;
+}
+
+/* ═══════════════════════════════════════
+   STEPPER
+   ═══════════════════════════════════════ */
+.pay-stepper {
+  background: #ffffff;
   border-bottom: 1px solid #f1f5f9;
-  padding: 20px 0;
+  padding: 24px 24px 0;
   position: sticky;
   top: 0;
   z-index: 50;
 }
 
-.payment__steps-inner {
-  max-width: 1200px;
+.pay-stepper-inner {
+  max-width: 700px;
   margin: 0 auto;
-  padding: 0 32px;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.payment__step {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: #94a3b8;
-  padding: 8px 16px;
-  border-radius: 100px;
-  transition: all 0.3s ease;
-}
-
-.payment__step--active {
-  color: #0f172a;
-  background: #f1f5f9;
-}
-
-.payment__step--done {
-  color: #10b981;
-}
-
-.payment__step-circle {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid #e2e8f0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.8rem;
-  font-weight: 700;
-  transition: all 0.3s ease;
-}
-
-.payment__step--active .payment__step-circle {
-  background: #0f172a;
-  border-color: #0f172a;
-  color: #fff;
-}
-
-.payment__step--done .payment__step-circle {
-  background: #10b981;
-  border-color: #10b981;
-  color: #fff;
-}
-
-.payment__step-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-/* ── MAIN LAYOUT ── */
-.payment__main {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px;
-}
-
-.payment__layout {
-  display: flex;
-  gap: 32px;
   align-items: flex-start;
 }
 
-.payment__form {
+.pay-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   flex: 1;
-  min-width: 0;
+  position: relative;
 }
 
-.payment__summary {
-  width: 380px;
-  flex-shrink: 0;
-  position: sticky;
-  top: 110px;
+.pay-step-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #94a3b8;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
 }
 
-/* ── PANELS (step content) ── */
-.payment__panel {
+.pay-step--active .pay-step-circle {
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
+}
+
+.pay-step--done .pay-step-circle {
+  background: #10b981;
+  color: #fff;
+}
+
+.pay-step-emoji {
+  font-size: 1rem;
+}
+
+.pay-step-label {
+  margin-top: 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #94a3b8;
+  text-align: center;
+  transition: color 0.3s ease;
+}
+
+.pay-step--active .pay-step-label {
+  color: #0f172a;
+}
+
+.pay-step--done .pay-step-label {
+  color: #10b981;
+}
+
+.pay-step-line {
+  position: absolute;
+  top: 22px;
+  left: calc(50% + 22px);
+  right: calc(-50% + 22px);
+  height: 2px;
+  background: #f1f5f9;
+  z-index: 1;
+  transition: background 0.3s ease;
+}
+
+.pay-step--done .pay-step-line {
+  background: #10b981;
+}
+
+/* ═══════════════════════════════════════
+   MAIN LAYOUT
+   ═══════════════════════════════════════ */
+.pay-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px 60px;
+}
+
+.pay-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 28px;
+  align-items: start;
+}
+
+/* ═══════════════════════════════════════
+   PANELS
+   ═══════════════════════════════════════ */
+.pay-panel {
   display: none;
 }
 
-.payment__panel--show {
+.pay-panel--show {
   display: block;
-  animation: paymentFadeIn 0.4s ease;
+  animation: payFadeIn 0.35s ease;
 }
 
-@keyframes paymentFadeIn {
+@keyframes payFadeIn {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-.payment__panel-header {
-  margin-bottom: 28px;
-}
-
-.payment__panel-sub {
-  font-size: 0.9rem;
-  color: #64748b;
-  margin-top: 6px;
-}
-
-/* ── EMPTY STATE ── */
-.payment__empty {
-  min-height: 100vh;
+.pay-panel-head {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 24px;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
   gap: 12px;
 }
 
-.payment__empty-icon {
-  width: 80px;
-  height: 80px;
-  background: #f1f5f9;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.pay-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #10b981;
+  display: block;
+  margin-bottom: 6px;
 }
 
-.payment__empty-title {
-  font-size: 1.4rem;
+.pay-panel-title {
+  font-size: 1.5rem;
   font-weight: 800;
   color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
 }
 
-.payment__empty-text {
-  color: #64748b;
-  max-width: 360px;
-  line-height: 1.6;
-}
-
-.payment__empty-btn {
-  padding: 12px 28px;
-  background: #0f172a;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
+.pay-panel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: #f0fdf4;
+  color: #059669;
+  font-size: 0.78rem;
   font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: background 0.2s;
+  border-radius: 8px;
+  border: 1px solid #d1fae5;
 }
 
-.payment__empty-btn:hover { background: #1e293b; }
-
-/* ── LOADING ── */
-.payment__loading {
-  text-align: center;
-  padding: 80px 20px;
-  color: #94a3b8;
+/* ═══════════════════════════════════════
+   LOADING
+   ═══════════════════════════════════════ */
+.pay-loading {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding: 60px 24px;
   gap: 16px;
+  color: #64748b;
 }
 
-.payment__loading-spinner {
+.pay-spinner {
   width: 36px;
   height: 36px;
   border: 3px solid #e2e8f0;
   border-top-color: #10b981;
   border-radius: 50%;
-  animation: spin 0.8s linear infinite;
+  animation: paySpin 0.7s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes paySpin {
+  to { transform: rotate(360deg); }
+}
 
-/* ═══════════════════════════════════════════════
-   STEP 1: FLOOR SELECTOR
-   ═══════════════════════════════════════════════ */
-
-.payment__floor-layout {
+/* ═══════════════════════════════════════
+   MESSAGE (empty / error)
+   ═══════════════════════════════════════ */
+.pay-msg {
   display: flex;
-  gap: 20px;
-  min-height: 440px;
-}
-
-/* ── Floor Panel ── */
-.payment__floor-panel {
-  width: 88px;
-  flex-shrink: 0;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 16px 10px;
-  text-align: center;
-}
-
-.payment__floor-title {
-  font-size: 0.65rem;
-  font-weight: 700;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 50px 24px;
+  gap: 12px;
   color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  margin: 0 0 4px 0;
+  font-size: 0.9rem;
 }
 
-.payment__floor-count {
-  font-size: 0.75rem;
+.pay-msg--error p {
+  color: #ef4444;
   font-weight: 600;
-  color: #10b981;
-  margin: 0 0 14px 0;
 }
 
-.payment__floor-grid {
+/* ═══════════════════════════════════════
+   FLOOR LAYOUT
+   ═══════════════════════════════════════ */
+.pay-floor-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 5px;
-  max-height: 360px;
-  overflow-y: auto;
-  padding-right: 2px;
+  grid-template-columns: auto 1fr;
+  gap: 24px;
 }
 
-.payment__floor-grid::-webkit-scrollbar { width: 3px; }
-.payment__floor-grid::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+.pay-floor-panel {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+  align-self: start;
+  position: sticky;
+  top: 110px;
+}
 
-.payment__floor-btn {
-  width: 100%;
-  aspect-ratio: 1;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
-  background: #fff;
-  color: #94a3b8;
-  font-size: 0.85rem;
+.pay-floor-head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.pay-floor-label {
+  font-size: 0.78rem;
   font-weight: 700;
-  font-family: inherit;
+  color: #0f172a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.pay-floor-count {
+  font-size: 0.72rem;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.pay-floor-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pay-floor-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  border: 2px solid #f1f5f9;
+  background: #fff;
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
 }
 
-.payment__floor-btn:not(.payment__floor-btn--disabled):hover {
+.pay-floor-btn:hover:not(:disabled) {
   border-color: #10b981;
   color: #10b981;
-  background: #f0fdf4;
+  transform: scale(1.05);
 }
 
-.payment__floor-btn--active {
-  background: #0f172a !important;
-  border-color: #0f172a !important;
+.pay-floor-btn--active {
+  background: linear-gradient(135deg, #10b981, #059669) !important;
+  border-color: transparent !important;
   color: #fff !important;
-  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.3);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
   transform: scale(1.08);
 }
 
-.payment__floor-btn--disabled {
-  cursor: not-allowed;
+.pay-floor-btn--off {
   opacity: 0.3;
+  cursor: not-allowed;
+  background: #f8fafc;
 }
 
-/* ── Room List ── */
-.payment__room-list {
-  flex: 1;
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
+/* ═══════════════════════════════════════
+   ROOMS
+   ═══════════════════════════════════════ */
+.pay-rooms {
+  min-height: 200px;
 }
 
-.payment__room-empty {
-  flex: 1;
+.pay-rooms-head {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 12px;
-  color: #94a3b8;
-  font-size: 0.9rem;
-  text-align: center;
-  line-height: 1.5;
-}
-
-.payment__room-header {
-  display: flex;
   justify-content: space-between;
-  align-items: center;
   margin-bottom: 16px;
 }
 
-.payment__room-header h3 {
-  font-size: 1.1rem;
+.pay-rooms-head h3 {
+  font-size: 1.05rem;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
 }
 
-.payment__room-badge {
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #10b981;
-  background: #f0fdf4;
+.pay-rooms-badge {
   padding: 4px 12px;
-  border-radius: 100px;
+  background: #f0fdf4;
+  color: #059669;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 8px;
+  border: 1px solid #d1fae5;
 }
 
-.payment__room-cards {
+.pay-rooms-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.payment__room-card {
+.pay-room {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px;
+  padding: 16px 18px;
+  background: #ffffff;
   border: 2px solid #f1f5f9;
   border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
-.payment__room-card:hover {
-  border-color: #10b981;
-  background: #f0fdf4;
+.pay-room:hover {
+  border-color: #d1fae5;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.06);
+  transform: translateX(4px);
 }
 
-.payment__room-card--active {
-  border-color: #10b981;
-  background: #f0fdf4;
-  box-shadow: 0 2px 12px rgba(16, 185, 129, 0.12);
+.pay-room--active {
+  border-color: #10b981 !important;
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+  box-shadow: 0 4px 20px rgba(16, 185, 129, 0.12);
 }
 
-.payment__room-card-left {
+.pay-room-left {
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
-.payment__room-num {
+.pay-room-num {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 700;
   color: #0f172a;
 }
 
-.payment__room-card--active .payment__room-num { color: #059669; }
-.payment__room-card--active .payment__room-num svg { stroke: #10b981; }
-
-.payment__room-type {
-  font-size: 0.8rem;
-  color: #64748b;
-  padding-left: 26px;
+.pay-room-num svg {
+  color: #10b981;
+  flex-shrink: 0;
 }
 
-.payment__room-card-right {
+.pay-room-type {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+  padding-left: 24px;
+}
+
+.pay-room-right {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
 }
 
-.payment__room-price {
-  font-size: 1rem;
+.pay-room-price {
+  font-size: 0.95rem;
   font-weight: 800;
   color: #0f172a;
 }
 
-.payment__room-price small {
-  font-size: 0.7rem;
-  font-weight: 400;
+.pay-room-price small {
+  font-size: 0.68rem;
+  font-weight: 500;
   color: #94a3b8;
 }
 
-.payment__room-card--active .payment__room-price { color: #059669; }
-
-.payment__room-check {
-  font-size: 0.7rem;
-  font-weight: 600;
+.pay-room-check {
+  font-size: 0.72rem;
+  font-weight: 700;
   color: #10b981;
-  background: #dcfce7;
-  padding: 3px 10px;
-  border-radius: 100px;
+  padding: 2px 10px;
+  background: #d1fae5;
+  border-radius: 6px;
 }
 
-/* ═══════════════════════════════════════════════
-   STEP 2: GUEST FORM
-   ═══════════════════════════════════════════════ */
-
-.payment__guest-form {
+/* ═══════════════════════════════════════
+   FORM FIELDS
+   ═══════════════════════════════════════ */
+.pay-fields {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 18px;
 }
 
-.payment__field--full {
+.pay-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.pay-field--full {
   grid-column: 1 / -1;
 }
 
-.payment__field label {
-  display: block;
-  font-size: 0.85rem;
+.pay-field label {
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #334155;
-  margin-bottom: 6px;
+  color: #475569;
 }
 
-.payment__required {
+.pay-req {
   color: #ef4444;
 }
 
-.payment__field input,
-.payment__field textarea {
-  width: 100%;
+.pay-field input,
+.pay-field textarea {
   padding: 12px 16px;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
-  font-size: 0.9rem;
-  font-family: inherit;
+  font-size: 0.88rem;
   color: #0f172a;
   background: #fff;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
   outline: none;
-  box-sizing: border-box;
+  font-family: inherit;
 }
 
-.payment__field input:focus,
-.payment__field textarea:focus {
+.pay-field input::placeholder,
+.pay-field textarea::placeholder {
+  color: #cbd5e1;
+}
+
+.pay-field input:focus,
+.pay-field textarea:focus {
   border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
 }
 
-.payment__field textarea { resize: vertical; }
+.pay-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
 
-/* ═══════════════════════════════════════════════
-   STEP 3: PAYMENT METHODS
-   ═══════════════════════════════════════════════ */
-
-.payment__methods {
+/* ═══════════════════════════════════════
+   PAYMENT METHODS
+   ═══════════════════════════════════════ */
+.pay-methods {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.payment__method {
+.pay-method {
   display: flex;
   align-items: center;
   gap: 14px;
   padding: 16px 18px;
+  background: #ffffff;
   border: 2px solid #f1f5f9;
   border-radius: 14px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
-.payment__method:hover {
-  border-color: #e2e8f0;
-  background: #fafafa;
+.pay-method:hover {
+  border-color: #d1fae5;
+  background: #f8fafc;
 }
 
-.payment__method--active {
-  border-color: #10b981;
-  background: #f0fdf4;
+.pay-method--active {
+  border-color: #10b981 !important;
+  background: linear-gradient(135deg, #f0fdf4, #ecfdf5) !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.1);
 }
 
-.payment__method-radio {
+.pay-method-radio {
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  border: 2px solid #cbd5e1;
+  border: 2px solid #d1d5db;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: all 0.2s;
+  transition: border-color 0.2s ease;
 }
 
-.payment__method--active .payment__method-radio {
+.pay-method--active .pay-method-radio {
   border-color: #10b981;
 }
 
-.payment__method-dot {
+.pay-method-dot {
   width: 10px;
   height: 10px;
   border-radius: 50%;
   background: #10b981;
+  animation: payPop 0.2s ease;
 }
 
-.payment__method-icon {
-  font-size: 1.6rem;
+@keyframes payPop {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
 }
 
-.payment__method-info {
+.pay-method-icon {
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.pay-method-info {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
 
-.payment__method-info strong {
-  font-size: 0.95rem;
+.pay-method-info strong {
+  font-size: 0.9rem;
   color: #0f172a;
 }
 
-.payment__method-info span {
-  font-size: 0.8rem;
+.pay-method-info span {
+  font-size: 0.75rem;
   color: #64748b;
 }
 
-/* ═══════════════════════════════════════════════
-   STEP 4: REVIEW
-   ═══════════════════════════════════════════════ */
-
-.payment__review {
-  margin-bottom: 20px;
+/* ═══════════════════════════════════════
+   REVIEW
+   ═══════════════════════════════════════ */
+.pay-review {
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 14px;
 }
 
-.payment__review-title {
-  font-size: 0.7rem;
+.pay-review-title {
+  font-size: 0.88rem;
   font-weight: 700;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: 0 0 10px 0;
+  color: #0f172a;
+  margin: 0 0 14px;
 }
 
-.payment__review-grid {
+.pay-review-grid {
   display: grid;
   grid-template-columns: 120px 1fr;
-  gap: 8px 16px;
-  background: #f8fafc;
-  padding: 16px 20px;
-  border-radius: 12px;
+  gap: 10px 16px;
 }
 
-.payment__review-grid span {
-  font-size: 0.88rem;
+.pay-review-grid span {
+  font-size: 0.82rem;
   color: #64748b;
 }
 
-.payment__review-grid strong {
-  font-size: 0.88rem;
+.pay-review-grid strong {
+  font-size: 0.85rem;
   color: #0f172a;
 }
 
-/* ═══════════════════════════════════════════════
-   BUTTONS
-   ═══════════════════════════════════════════════ */
+.pay-review-method {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #0f172a;
+  text-transform: capitalize;
+  margin: 0;
+}
 
-.payment__btn-group {
+/* ═══════════════════════════════════════
+   BUTTONS
+   ═══════════════════════════════════════ */
+.pay-btns {
   display: flex;
   gap: 12px;
   margin-top: 28px;
 }
 
-.payment__btn {
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-size: 0.95rem;
+.pay-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  font-size: 0.88rem;
   font-weight: 600;
-  font-family: inherit;
-  cursor: pointer;
-  transition: all 0.2s;
   border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  font-family: inherit;
 }
 
-.payment__btn--primary {
-  flex: 1;
-  background: #0f172a;
+.pay-btn--primary {
+  background: linear-gradient(135deg, #10b981, #059669);
   color: #fff;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+  margin-left: auto;
 }
 
-.payment__btn--primary:hover:not(:disabled) { background: #1e293b; }
-.payment__btn--primary:disabled { background: #cbd5e1; cursor: not-allowed; }
-.payment__btn--full { width: 100%; margin-top: 24px; }
+.pay-btn--primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(16, 185, 129, 0.4);
+}
 
-.payment__btn--outline {
-  background: #fff;
-  color: #0f172a;
+.pay-btn--primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pay-btn--ghost {
+  background: #ffffff;
+  color: #475569;
   border: 2px solid #e2e8f0;
 }
 
-.payment__btn--outline:hover {
-  background: #f8fafc;
-  border-color: #cbd5e1;
+.pay-btn--ghost:hover {
+  border-color: #10b981;
+  color: #10b981;
 }
 
-.payment__btn--pay {
-  background: #10b981;
+.pay-btn--full {
+  width: 100%;
+  justify-content: center;
+  margin-top: 24px;
+  padding: 14px;
+  font-size: 0.92rem;
+}
+
+.pay-btn--pay {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
   color: #fff;
-  flex: 1;
+  box-shadow: 0 4px 20px rgba(15, 23, 42, 0.3);
+  margin-left: auto;
+  padding: 14px 32px;
+  font-size: 0.92rem;
 }
 
-.payment__btn--pay:hover:not(:disabled) { background: #059669; }
+.pay-btn--pay:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.4);
+}
 
-/* ═══════════════════════════════════════════════
-   SUMMARY CARD (Kanan)
-   ═══════════════════════════════════════════════ */
+.pay-btn--pay:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
-.payment__summary-card {
-  background: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+.pay-btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: paySpin 0.6s linear infinite;
+}
+
+/* ═══════════════════════════════════════
+   SIDEBAR SUMMARY
+   ═══════════════════════════════════════ */
+.pay-sidebar {
+  position: sticky;
+  top: 110px;
+}
+
+.pay-summary {
+  background: #ffffff;
   border: 1px solid #f1f5f9;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
 }
 
-.payment__summary-img {
+.pay-summary-img {
+  position: relative;
   width: 100%;
   height: 180px;
+  overflow: hidden;
 }
 
-.payment__summary-img img {
+.pay-summary-img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.payment__summary-body {
-  padding: 20px;
+.pay-summary-rating {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  color: #fbbf24;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-radius: 8px;
 }
 
-.payment__summary-body h3 {
-  font-size: 1.15rem;
+.pay-summary-body {
+  padding: 18px 20px;
+}
+
+.pay-summary-body h3 {
+  font-size: 1.05rem;
   font-weight: 700;
   color: #0f172a;
-  margin: 0 0 6px 0;
+  margin: 0 0 6px;
 }
 
-.payment__summary-loc {
-  font-size: 0.85rem;
+.pay-summary-loc {
+  font-size: 0.82rem;
   color: #64748b;
-  margin: 0 0 8px 0;
+  margin: 0 0 4px;
 }
 
-.payment__summary-rating {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #f59e0b;
+.pay-summary-reviews {
+  font-size: 0.72rem;
+  color: #94a3b8;
 }
 
-.payment__summary-divider {
+.pay-summary-divider {
   height: 1px;
   background: #f1f5f9;
   margin: 0 20px;
 }
 
-.payment__summary-room {
+.pay-summary-room {
   display: flex;
-  align-items: flex-start;
-  gap: 10px;
+  align-items: center;
+  gap: 12px;
   padding: 16px 20px;
 }
 
-.payment__summary-room svg { flex-shrink: 0; margin-top: 2px; }
-.payment__summary-room p { font-size: 0.8rem; color: #64748b; margin: 0 0 2px 0; }
-.payment__summary-room strong { font-size: 0.9rem; color: #0f172a; }
-
-.payment__summary-details { padding: 16px 20px; }
-
-.payment__summary-row {
+.pay-summary-room-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #f0fdf4;
   display: flex;
-  justify-content: space-between;
-  font-size: 0.88rem;
-  color: #64748b;
-  padding: 6px 0;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.payment__summary-row span:last-child {
-  font-weight: 600;
+.pay-summary-room p {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0 0 2px;
+}
+
+.pay-summary-room strong {
+  font-size: 0.85rem;
   color: #0f172a;
 }
 
-.payment__summary-total {
+.pay-summary-details {
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pay-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pay-summary-row span {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.pay-summary-row span:last-child {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+.pay-summary-total {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 18px 20px;
-  font-size: 1rem;
-  color: #64748b;
+  background: #f8fafc;
 }
 
-.payment__summary-total strong {
-  font-size: 1.3rem;
-  font-weight: 800;
-  color: #10b981;
-}
-
-.payment__summary-back {
-  width: 100%;
-  margin-top: 12px;
-  padding: 12px;
-  background: none;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 0.85rem;
+.pay-summary-total span {
+  font-size: 0.9rem;
   font-weight: 600;
-  font-family: inherit;
-  color: #64748b;
-  cursor: pointer;
+  color: #475569;
+}
+
+.pay-summary-total strong {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.pay-back-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  transition: all 0.2s;
+  gap: 8px;
+  width: 100%;
+  margin-top: 14px;
+  padding: 12px;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid #f1f5f9;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
 }
 
-.payment__summary-back:hover {
-  background: #f8fafc;
-  color: #0f172a;
-  border-color: #cbd5e1;
+.pay-back-btn:hover {
+  color: #10b981;
+  border-color: #d1fae5;
 }
 
-/* ═══════════════════════════════════════════════
+/* ═══════════════════════════════════════
    RESPONSIVE
-   ═══════════════════════════════════════════════ */
-
+   ═══════════════════════════════════════ */
 @media (max-width: 900px) {
-  .payment__layout {
-    flex-direction: column-reverse;
+  .pay-layout {
+    grid-template-columns: 1fr;
   }
-  .payment__summary {
-    width: 100%;
+
+  .pay-sidebar {
     position: static;
     order: -1;
   }
-  .payment__summary-img { height: 160px; }
-}
 
-@media (max-width: 768px) {
-  .payment__main { padding: 20px 16px; }
-  .payment__steps-inner { padding: 0 16px; gap: 4px; }
-  .payment__step-label { display: none; }
-  .payment__step { padding: 6px 10px; }
-
-  .payment__floor-layout { flex-direction: column; }
-  .payment__floor-panel {
-    width: 100%;
-    padding: 12px;
+  .pay-floor-layout {
+    grid-template-columns: 1fr;
   }
-  .payment__floor-title, .payment__floor-count { display: inline; margin-right: 12px; }
-  .payment__floor-grid {
+
+  .pay-floor-panel {
+    position: static;
     display: flex;
-    flex-wrap: wrap;
-    max-height: none;
-    justify-content: center;
-    gap: 6px;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
   }
-  .payment__floor-btn { width: 44px; aspect-ratio: auto; height: 38px; border-radius: 8px; }
-  .payment__room-list { min-height: 200px; }
 
-  .payment__guest-form { grid-template-columns: 1fr; }
-  .payment__btn-group { flex-direction: column; }
-  .payment__review-grid { grid-template-columns: 1fr; gap: 4px; }
-  .payment__review-grid span { font-size: 0.78rem; color: #94a3b8; }
+  .pay-floor-grid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .pay-floor-head {
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 0;
+  }
 }
 
-@media (max-width: 480px) {
-  .section__title { font-size: 1.3rem; }
-  .payment__summary-body { padding: 16px; }
-  .payment__summary-details,
-  .payment__summary-total { padding-left: 16px; padding-right: 16px; }
-  .payment__summary-divider { margin-left: 16px; margin-right: 16px; }
-  .payment__summary-room { padding: 12px 16px; }
-  .payment__floor-btn { width: 38px; height: 34px; font-size: 0.8rem; }
+@media (max-width: 600px) {
+  .pay-stepper-inner {
+    gap: 0;
+  }
+
+  .pay-step-label {
+    font-size: 0.65rem;
+  }
+
+  .pay-step-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+  }
+
+  .pay-step-line {
+    top: 19px;
+  }
+
+  .pay-main {
+    padding: 20px 14px 40px;
+  }
+
+  .pay-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .pay-btns {
+    flex-direction: column-reverse;
+  }
+
+  .pay-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .pay-review-grid {
+    grid-template-columns: 100px 1fr;
+    gap: 8px 12px;
+  }
+
+  .pay-panel-head {
+    flex-direction: column;
+  }
+
+  .pay-room {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .pay-room-right {
+    align-items: flex-start;
+  }
 }

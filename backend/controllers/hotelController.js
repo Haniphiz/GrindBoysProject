@@ -5,17 +5,21 @@ const Hotel = require("../models/hotelModel");
 // =========================
 exports.getHotels = async (req, res) => {
   try {
+    const results = await Hotel.getAll();
 
-    const results =
-      await Hotel.getAll();
+    const updatedResults = results.map(hotel => {
+      let imageUrl = hotel.image_url;
 
-    const updatedResults =
-      results.map(hotel => ({
+      // ✅ Hanya tambah prefix /uploads/ untuk file LOKAL (bukan URL lengkap)
+      if (imageUrl && !imageUrl.startsWith("http")) {
+        imageUrl = `${req.protocol}://${req.get("host")}/uploads/${imageUrl}`;
+      }
+
+      return {
         ...hotel,
-        image_url: hotel.image_url
-          ? `${req.protocol}://${req.get("host")}/uploads/${hotel.image_url}`
-          : null
-      }));
+        image_url: imageUrl
+      };
+    });
 
     res.json({
       status: "success",
@@ -23,16 +27,10 @@ exports.getHotels = async (req, res) => {
     });
 
   } catch (error) {
-
-    console.error(
-      "GET HOTELS ERROR:",
-      error
-    );
-
+    console.error("GET HOTELS ERROR:", error);
     res.status(500).json({
       status: "error",
-      message:
-        "Terjadi kesalahan server"
+      message: "Terjadi kesalahan server"
     });
   }
 };
@@ -41,46 +39,31 @@ exports.getHotels = async (req, res) => {
 // CREATE HOTEL
 // =========================
 exports.createHotel = async (req, res) => {
-
   try {
+    const { name, address, city, description, floors, rating, reviews } = req.body;
+    const image_url = req.file ? req.file.filename : null;
 
-    const {
-      name,
-      address,
-      city,
-      description
-    } = req.body;
-
-    const image_url =
-      req.file
-        ? req.file.filename
-        : null;
-
-    if (
-      !name ||
-      !address ||
-      !city
-    ) {
+    if (!name || !address || !city) {
       return res.status(400).json({
         status: "error",
-        message:
-          "Nama, alamat, dan kota wajib diisi"
+        message: "Nama, alamat, dan kota wajib diisi"
       });
     }
 
-    const result =
-      await Hotel.create({
-        name,
-        address,
-        city,
-        description,
-        image_url
-      });
+    const result = await Hotel.create({
+      name,
+      address,
+      city,
+      description,
+      image_url,
+      floors: floors || 3,
+      rating: rating || 0,
+      reviews: reviews || 0
+    });
 
     res.status(201).json({
       status: "success",
-      message:
-        "Hotel berhasil ditambahkan",
+      message: "Hotel berhasil ditambahkan",
       data: {
         id: result.insertId,
         name,
@@ -89,17 +72,13 @@ exports.createHotel = async (req, res) => {
         description,
         image_url: image_url
           ? `${req.protocol}://${req.get("host")}/uploads/${image_url}`
-          : null
+          : null,
+        floors: floors || 3
       }
     });
 
   } catch (error) {
-
-    console.error(
-      "CREATE HOTEL ERROR:",
-      error
-    );
-
+    console.error("CREATE HOTEL ERROR:", error);
     res.status(500).json({
       status: "error",
       message: error.message
@@ -111,73 +90,44 @@ exports.createHotel = async (req, res) => {
 // UPDATE HOTEL
 // =========================
 exports.updateHotel = async (req, res) => {
-
   try {
-
-    const id =
-      req.params.id;
-
-    const {
-      name,
-      address,
-      city,
-      description
-    } = req.body;
+    const id = req.params.id;
+    const { name, address, city, description, floors, rating, reviews } = req.body;
 
     let image_url;
 
-    // jika upload gambar baru
     if (req.file) {
-
-      image_url =
-        req.file.filename;
-
+      image_url = req.file.filename;
     } else {
-
-      // gunakan gambar lama
-      const currentHotel =
-        await Hotel.getById(id);
-
-      image_url =
-        currentHotel.image_url;
+      const currentHotel = await Hotel.getById(id);
+      image_url = currentHotel.image_url;
     }
 
-    if (
-      !name ||
-      !address ||
-      !city
-    ) {
+    if (!name || !address || !city) {
       return res.status(400).json({
         status: "error",
-        message:
-          "Nama, alamat, dan kota wajib diisi"
+        message: "Nama, alamat, dan kota wajib diisi"
       });
     }
 
-    await Hotel.update(
-      id,
-      {
-        name,
-        address,
-        city,
-        description,
-        image_url
-      }
-    );
+    await Hotel.update(id, {
+      name,
+      address,
+      city,
+      description,
+      image_url,
+      floors: floors || 3,
+      rating: rating || 0,
+      reviews: reviews || 0
+    });
 
     res.json({
       status: "success",
-      message:
-        "Hotel berhasil diperbarui"
+      message: "Hotel berhasil diperbarui"
     });
 
   } catch (error) {
-
-    console.error(
-      "UPDATE HOTEL ERROR:",
-      error
-    );
-
+    console.error("UPDATE HOTEL ERROR:", error);
     res.status(500).json({
       status: "error",
       message: error.message
@@ -189,38 +139,24 @@ exports.updateHotel = async (req, res) => {
 // DELETE HOTEL
 // =========================
 exports.deleteHotel = async (req, res) => {
-
   try {
-
-    const id =
-      req.params.id;
-
+    const id = req.params.id;
     await Hotel.delete(id);
 
     res.json({
       status: "success",
-      message:
-        "Hotel berhasil dihapus"
+      message: "Hotel berhasil dihapus"
     });
 
   } catch (error) {
-
-    if (
-      error.code ===
-      "ER_ROW_IS_REFERENCED_2"
-    ) {
+    if (error.code === "ER_ROW_IS_REFERENCED_2") {
       return res.status(400).json({
         status: "error",
-        message:
-          "Hotel tidak bisa dihapus karena masih memiliki room atau booking"
+        message: "Hotel tidak bisa dihapus karena masih memiliki room atau booking"
       });
     }
 
-    console.error(
-      "DELETE HOTEL ERROR:",
-      error
-    );
-
+    console.error("DELETE HOTEL ERROR:", error);
     res.status(500).json({
       status: "error",
       message: error.message
@@ -232,29 +168,20 @@ exports.deleteHotel = async (req, res) => {
 // DETAIL HOTEL
 // =========================
 exports.getHotelDetail = async (req, res) => {
-
   try {
-
-    const id =
-      req.params.id;
-
-    const hotel =
-      await Hotel.getDetail(id);
+    const id = req.params.id;
+    const hotel = await Hotel.getDetail(id);
 
     if (!hotel) {
-
       return res.status(404).json({
         status: "error",
-        message:
-          "Hotel tidak ditemukan"
+        message: "Hotel tidak ditemukan"
       });
     }
 
-    if (
-      hotel.hotel.image_url
-    ) {
-      hotel.hotel.image_url =
-        `${req.protocol}://${req.get("host")}/uploads/${hotel.hotel.image_url}`;
+    // ✅ Sama — hanya prefix untuk file lokal
+    if (hotel.hotel.image_url && !hotel.hotel.image_url.startsWith("http")) {
+      hotel.hotel.image_url = `${req.protocol}://${req.get("host")}/uploads/${hotel.hotel.image_url}`;
     }
 
     res.json({
@@ -263,15 +190,10 @@ exports.getHotelDetail = async (req, res) => {
     });
 
   } catch (error) {
-
-    console.error(
-      "DETAIL HOTEL ERROR:",
-      error
-    );
-
+    console.error("DETAIL HOTEL ERROR:", error);
     res.status(500).json({
       status: "error",
-      message: error.message
+      message: "Terjadi kesalahan server"
     });
   }
 };

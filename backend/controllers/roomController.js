@@ -1,11 +1,18 @@
 const Room = require("../models/roomModel");
 
 // =========================
-// GET ALL ROOMS
+// GET ALL ROOMS (DITAMBAH FILTER HOTEL_ID)
 // =========================
 exports.getRooms = async (req, res) => {
   try {
-    const results = await Room.getAll();
+    const { hotel_id } = req.query; // Tangkap parameter ?hotel_id= dari frontend
+    
+    let results = await Room.getAll();
+
+    // ✅ PERBAIKAN: Jika ada parameter hotel_id, filter kamar yang sesuai saja
+    if (hotel_id) {
+      results = results.filter(room => room.hotel_id == hotel_id);
+    }
 
     const updatedRooms = results.map(room => ({
       ...room,
@@ -34,10 +41,7 @@ exports.getRooms = async (req, res) => {
 // =========================
 exports.getRoomById = async (req, res) => {
   try {
-
-    const room = await Room.getById(
-      req.params.id
-    );
+    const room = await Room.getById(req.params.id);
 
     if (!room) {
       return res.status(404).json({
@@ -47,8 +51,7 @@ exports.getRoomById = async (req, res) => {
     }
 
     if (room.image_url) {
-      room.image_url =
-        `${req.protocol}://${req.get("host")}/uploads/${room.image_url}`;
+      room.image_url = `${req.protocol}://${req.get("host")}/uploads/${room.image_url}`;
     }
 
     res.json({
@@ -71,7 +74,6 @@ exports.getRoomById = async (req, res) => {
 // =========================
 exports.createRoom = async (req, res) => {
   try {
-
     const {
       hotel_id,
       room_type,
@@ -80,19 +82,12 @@ exports.createRoom = async (req, res) => {
       description
     } = req.body;
 
-    const image_url = req.file
-      ? req.file.filename
-      : null;
+    const image_url = req.file ? req.file.filename : null;
 
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
 
-    if (
-      !hotel_id ||
-      !room_type ||
-      !price ||
-      !capacity
-    ) {
+    if (!hotel_id || !room_type || !price || !capacity) {
       return res.status(400).json({
         status: "error",
         message: "Semua field wajib diisi"
@@ -128,34 +123,20 @@ exports.createRoom = async (req, res) => {
 // UPDATE ROOM
 // =========================
 exports.updateRoom = async (req, res) => {
-
   try {
-
     let image_url;
 
     if (req.file) {
-
-      image_url =
-        req.file.filename;
-
+      image_url = req.file.filename;
     } else {
-
-      const currentRoom =
-        await Room.getById(
-          req.params.id
-        );
-
-      image_url =
-        currentRoom.image_url;
+      const currentRoom = await Room.getById(req.params.id);
+      image_url = currentRoom.image_url;
     }
 
-    await Room.update(
-      req.params.id,
-      {
-        ...req.body,
-        image_url
-      }
-    );
+    await Room.update(req.params.id, {
+      ...req.body,
+      image_url
+    });
 
     res.json({
       status: "success",
@@ -163,17 +144,12 @@ exports.updateRoom = async (req, res) => {
     });
 
   } catch (error) {
-
-    console.error(
-      "UPDATE ROOM ERROR:",
-      error
-    );
+    console.error("UPDATE ROOM ERROR:", error);
 
     res.status(500).json({
       status: "error",
       message: error.message
     });
-
   }
 };
 
@@ -182,7 +158,6 @@ exports.updateRoom = async (req, res) => {
 // =========================
 exports.deleteRoom = async (req, res) => {
   try {
-
     await Room.delete(req.params.id);
 
     res.json({
@@ -191,18 +166,11 @@ exports.deleteRoom = async (req, res) => {
     });
 
   } catch (error) {
-
-    if (
-      error.code ===
-      "ER_ROW_IS_REFERENCED_2"
-    ) {
-
+    if (error.code === "ER_ROW_IS_REFERENCED_2") {
       return res.status(400).json({
         status: "error",
-        message:
-          "Kamar tidak bisa dihapus karena masih memiliki booking."
+        message: "Kamar tidak bisa dihapus karena masih memiliki booking."
       });
-
     }
 
     console.error(error);
@@ -211,6 +179,5 @@ exports.deleteRoom = async (req, res) => {
       status: "error",
       message: error.message
     });
-
   }
 };

@@ -1,0 +1,108 @@
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes fadeSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.page { }
+.header { margin-bottom: 28px; }
+.eyebrow { color: #C9A96E; font-weight: 600; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin: 0 0 4px; }
+.greeting { font-size: 34px; font-weight: 600; color: #1A1A2E; margin: 0; }
+.date { color: #9CA3AF; font-size: 14px; margin: 4px 0 0; }
+
+/* Stat Cards */
+.statsGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-bottom: 28px; }
+.statCard {
+  background: #fff; border-radius: 16px; padding: 20px 22px; border: 1px solid #F0EBE3;
+  position: relative; overflow: hidden; cursor: default;
+  animation: fadeSlideUp 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.statCard:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(10,22,40,0.1); }
+.statCard:nth-child(1) { animation-delay: 0s; }
+.statCard:nth-child(2) { animation-delay: 0.08s; }
+.statCard:nth-child(3) { animation-delay: 0.16s; }
+.statCard:nth-child(4) { animation-delay: 0.24s; }
+.statTop { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+.statIcon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0;
+}
+.statLabel { font-size: 13px; color: #6B7280; font-weight: 500; }
+.statValue { font-size: 32px; font-weight: 700; color: #1A1A2E; line-height: 1; }
+.statBar { position: absolute; top: 0; left: 0; right: 0; height: 3px; opacity: 0.3; }
+
+/* Charts Row */
+.chartsRow { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; margin-bottom: 28px; }
+.chartCard {
+  background: #fff; border-radius: 16px; border: 1px solid #F0EBE3; padding: 24px;
+  animation: fadeSlideUp 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both;
+}
+.chartCard:nth-child(1) { animation-delay: 0.32s; }
+.chartCard:nth-child(2) { animation-delay: 0.40s; }
+.chartHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.chartTitle { font-size: 16px; font-weight: 700; color: #1A1A2E; }
+.chartSub { font-size: 12px; color: #9CA3AF; }
+.chartRevenue { font-size: 22px; font-weight: 700; color: #059669; }
+.emptyChart { text-align: center; padding: 40px 20px; color: #9CA3AF; font-size: 13px; }
+
+/* Status Legend */
+.statusLegend { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 8px; }
+.statusItem { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.statusDot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.statusName { color: #6B7280; }
+.statusCount { font-weight: 700; color: #1A1A2E; }
+.statusPercent { color: #9CA3AF; font-size: 11px; }
+
+/* Recent Bookings */
+.recentCard {
+  background: #fff; border-radius: 16px; border: 1px solid #F0EBE3; overflow: hidden;
+  animation: fadeSlideUp 0.5s cubic-bezier(0.25,0.46,0.45,0.94) 0.48s both;
+}
+.recentHeader { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #F0EBE3; }
+.recentTitle { font-size: 16px; font-weight: 700; color: #1A1A2E; }
+.recentSub { font-size: 12px; color: #9CA3AF; }
+.recentLink {
+  font-size: 13px; font-weight: 600; color: #C9A96E; text-decoration: none;
+  padding: 6px 14px; border-radius: 8px; background: rgba(201,169,110,0.1); transition: background 0.2s;
+}
+.recentLink:hover { background: rgba(201,169,110,0.2); }
+.tableWrap { overflow-x: auto; }
+.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th {
+  padding: 10px 18px; text-align: left; font-size: 10px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase; color: #9CA3AF;
+  background: #FAF7F2; white-space: nowrap;
+}
+.table td { padding: 12px 18px; border-bottom: 1px solid #F0EBE3; }
+.table tr:last-child td { border-bottom: none; }
+.tableRow { transition: background 0.2s; }
+.tableRow:hover { background: #FAF7F2; }
+.idCell { font-weight: 600; color: #1A1A2E; font-size: 12px; }
+.guestCell { color: #1A1A2E; font-weight: 500; }
+.hotelCell { color: #6B7280; }
+.priceCell { font-weight: 700; color: #1A1A2E; }
+.statusBadge {
+  display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px;
+  border-radius: 100px; font-size: 11px; font-weight: 600;
+}
+.statusDotSmall { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+.dateCell { color: #9CA3AF; font-size: 12px; }
+.timeCell { margin-left: 4px; }
+.emptyRecent { text-align: center; padding: 40px 20px; color: #9CA3AF; font-size: 13px; }
+
+/* Loading */
+.loadingWrap { display: flex; align-items: center; justify-content: center; min-height: 60vh; flex-direction: column; gap: 16px; }
+.spinner { width: 40px; height: 40px; border: 3px solid #F0EBE3; border-top-color: #C9A96E; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.loadingText { font-size: 14px; color: #9CA3AF; }
+
+/* Error */
+.errorWrap { text-align: center; padding: 80px 20px; }
+.errorIcon { font-size: 48px; margin-bottom: 12px; }
+.errorTitle { color: #1A1A2E; margin-bottom: 8px; font-weight: 600; }
+.errorText { color: #9CA3AF; font-size: 14px; }
+
+@media (max-width: 768px) {
+  .chartsRow { grid-template-columns: 1fr; }
+  .statsGrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .statsGrid { grid-template-columns: 1fr; }
+}

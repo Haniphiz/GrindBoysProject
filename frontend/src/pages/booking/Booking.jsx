@@ -302,7 +302,7 @@ function EmptyState({ filter }) {
 
 // ── Main Page ──
 export default function Booking() {
-  const { token } = useAuth();
+  const { token, isLoaded } = useAuth();
   const navigate = useNavigate();
 
   const [bookings, setBookings] = useState([]);
@@ -321,6 +321,7 @@ export default function Booking() {
 
   // ── Fetch data dari API ──
   const fetchBookings = async () => {
+    if (!isLoaded) return;
     if (!token) {
       navigate("/login");
       return;
@@ -349,7 +350,7 @@ export default function Booking() {
 
   useEffect(() => {
     fetchBookings();
-  }, [token]);
+  }, [token, isLoaded]);
 
   // ── Cancel booking ke API ──
   const handleCancel = async (bookingId) => {

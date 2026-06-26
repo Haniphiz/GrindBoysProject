@@ -1,276 +1,210 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import styles from "./AdminHotel.module.css";
+
+const API = "http://localhost:3000/api/hotels";
+const FORMAT_DATE = (s) => {
+  if (!s) return "-";
+  return new Date(s).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" });
+};
 
 function AdminHotel() {
-  // ----------------------------------------------------
-  // 1. STATE MANAGEMENT
-  // ----------------------------------------------------
   const [hotels, setHotels] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-  
-  const [formData, setFormData] = useState({
-    nama: "",
-    alamat: "",
-    kota: "",
-    deskripsi: "",
-    gambar: null,
-  });
+  const [formData, setFormData] = useState({ nama: "", alamat: "", kota: "", deskripsi: "", gambar: null });
+  const [preview, setPreview] = useState(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  // ----------------------------------------------------
-  // 2. API CALLS
-  // ----------------------------------------------------
-  const loadHotels = async () => {
+  const load = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/hotels");
-      // Mengikuti struktur response res.data.data dari backend controller lu
+      const res = await axios.get(API);
       setHotels(res.data.data || res.data);
-    } catch (error) {
-      console.error("Gagal memuat data hotel:", error);
+    } catch (err) {
+      console.error(err);
     }
   };
 
-  useEffect(() => {
-    loadHotels();
-  }, []);
+  useEffect(() => { load(); }, []);
 
-  // ----------------------------------------------------
-  // 3. HANDLERS
-  // ----------------------------------------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleFileChange = (e) => {
-    setFormData((prev) => ({ ...prev, gambar: e.target.files[0] }));
+  const handleFile = (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({ ...prev, gambar: file }));
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => setPreview(ev.target.result);
+      reader.readAsDataURL(file);
+    } else {
+      setPreview(null);
+    }
   };
 
- const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const dataToSend = new FormData();
-    dataToSend.append("name", formData.nama);
-    dataToSend.append("address", formData.alamat);
-    dataToSend.append("city", formData.kota);
-    dataToSend.append("description", formData.deskripsi);
-    
-    if (formData.gambar) {
-      dataToSend.append("image", formData.gambar);
-    }
-
+    setSubmitting(true);
+    const data = new FormData();
+    data.append("name", formData.nama);
+    data.append("address", formData.alamat);
+    data.append("city", formData.kota);
+    data.append("description", formData.deskripsi);
+    if (formData.gambar) data.append("image", formData.gambar);
+    const token = localStorage.getItem("token");
+    const config = { headers: { Authorization: `Bearer ${token}` } };
     try {
-      // 1. Ambil token dari localStorage (Pastikan namanya sesuai dengan saat lu set pas login, misal "token")
-      const token = localStorage.getItem("token"); 
-
-      // 2. Bungkus konfigurasi headers, sertakan Authorization Bearer Token
-      const config = {
-        headers: { 
-          "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${token}` // 🔥 Ini yang bikin lu dapet izin akses dari backend
-        },
-      };
-
       if (selectedId) {
-        // 3. Kirim dengan config headers terbaru
-        await axios.put(`http://localhost:3000/api/hotels/${selectedId}`, dataToSend, config);
-        alert("Data hotel berhasil diperbarui!");
+        config.headers["Content-Type"] = "multipart/form-data";
+        await axios.put(`${API}/${selectedId}`, data, config);
       } else {
-        // 3. Kirim dengan config headers terbaru
-        await axios.post("http://localhost:3000/api/hotels", dataToSend, config);
-        alert("Hotel baru berhasil ditambahkan!");
+        config.headers["Content-Type"] = "multipart/form-data";
+        await axios.post(API, data, config);
       }
-      handleReset();
-      loadHotels();
-    } catch (error) {
-      console.error("Gagal menyimpan data:", error);
-      // Biar lebih detail kalau ada error lain nantinya:
-      if (error.response) {
-        console.log("Detail Error Backend:", error.response.data);
-      }
-      alert("Terjadi kendala saat menyimpan data.");
+      reset();
+      load();
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal menyimpan hotel");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   const handleEdit = (hotel) => {
     setSelectedId(hotel.id);
-    // FIX: Memetakan property database backend ke state form frontend
-    setFormData({
-      nama: hotel.name || "",
-      alamat: hotel.address || "",
-      kota: hotel.city || "",
-      deskripsi: hotel.description || "",
-      gambar: null, 
-    });
+    setFormData({ nama: hotel.name || "", alamat: hotel.address || "", kota: hotel.city || "", deskripsi: hotel.description || "", gambar: null });
+    setPreview(hotel.image_url || null);
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus data hotel ini?")) {
-      try {
-        await axios.delete(`http://localhost:3000/api/hotels/${id}`);
-        alert("Hotel berhasil dihapus!");
-        loadHotels();
-        if (selectedId === id) handleReset();
-      } catch (error) {
-        console.error("Gagal menghapus data:", error);
-      }
+    if (!window.confirm("Yakin ingin menghapus hotel ini?")) return;
+    try {
+      await axios.delete(`${API}/${id}`);
+      if (selectedId === id) reset();
+      load();
+    } catch (err) {
+      alert(err.response?.data?.message || "Gagal menghapus hotel");
     }
   };
 
-  const handleReset = () => {
+  const reset = () => {
     setSelectedId(null);
     setFormData({ nama: "", alamat: "", kota: "", deskripsi: "", gambar: null });
-    const fileInput = document.getElementById("fileInput");
-    if (fileInput) fileInput.value = "";
+    setPreview(null);
+    const fi = document.getElementById("hotelFileInput");
+    if (fi) fi.value = "";
   };
 
-  // ----------------------------------------------------
-  // 4. RENDER UI
-  // ----------------------------------------------------
   return (
-    <div className="grindboys-content-only" style={{ width: "100%", padding: "10px" }}>
-      
-      <style dangerouslySetInnerHTML={{__html: `
-        .grindboys-content-only * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
-        .grindboys-card { background: #ffffff; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; margin-bottom: 2rem; }
-        .grindboys-card h3 { margin-bottom: 1.5rem; color: #1e293b; font-size: 1.3rem; font-weight: 700; }
-        .grindboys-form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; width: 100%; }
-        .grindboys-full { grid-column: span 2; }
-        .grindboys-form input[type="text"], 
-        .grindboys-form textarea { width: 100%; padding: 0.8rem 1rem; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 0.95rem; color: #1e293b; outline: none; transition: 0.2s; }
-        .grindboys-form input[type="text"]:focus, 
-        .grindboys-form textarea:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        .grindboys-btn-primary { background-color: #2563eb; color: white; border: none; padding: 0.8rem 1.75rem; font-weight: 600; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .grindboys-btn-primary:hover { background-color: #1d4ed8; }
-        .grindboys-btn-secondary { background-color: #64748b; color: white; border: none; padding: 0.8rem 1.75rem; font-weight: 600; border-radius: 8px; cursor: pointer; margin-left: 10px; }
-        .grindboys-table-wrap { overflow-x: auto; width: 100%; margin-top: 1rem; }
-        .grindboys-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .grindboys-table th { background-color: #f8fafc; color: #475569; font-weight: 700; padding: 1rem; border-bottom: 2px solid #e2e8f0; font-size: 0.9rem; }
-        .grindboys-table td { padding: 1rem; border-bottom: 1px solid #e2e8f0; color: #1e293b; vertical-align: middle; }
-        .grindboys-btn-edit { padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; background-color: #e2e8f0; color: #1e293b; font-weight: 600; margin-right: 6px; }
-        .grindboys-btn-delete { padding: 0.4rem 0.8rem; font-size: 0.85rem; border-radius: 6px; border: none; cursor: pointer; background-color: #ef4444; color: white; font-weight: 600; }
-      `}} />
+    <div className={styles.page}>
+      <p className={styles.eyebrow}>Manajemen Hotel</p>
+      <h1 className={styles.title}>Kelola <span className={styles.accent}>Hotel</span></h1>
+      <p className={styles.subtitle}>Tambah, edit, dan hapus data hotel properti Anda.</p>
 
-      {/* TAMPILAN FORM */}
-      <div className="grindboys-card">
-        <h3>{selectedId ? "📝 Edit Detail Hotel" : "✨ Tambah Hotel Baru"}</h3>
-        <form onSubmit={handleSubmit} className="grindboys-form">
-          <input
-            type="text"
-            name="nama"
-            placeholder="Nama Hotel"
-            value={formData.nama}
-            onChange={handleChange}
-            required
-          />
-          <input
-            type="text"
-            name="kota"
-            placeholder="Kabupaten / Kota"
-            value={formData.kota}
-            onChange={handleChange}
-            required
-          />
-          <div className="grindboys-full">
-            <input
-              type="text"
-              name="alamat"
-              placeholder="Alamat Lengkap Hotel"
-              value={formData.alamat}
-              onChange={handleChange}
-              required
-            />
+      <div className={styles.grid}>
+        {/* Form */}
+        <div className={styles.formCard}>
+          <div className={`${styles.formTag} ${selectedId ? styles.formTagEdit : styles.formTagNew}`}>
+            {selectedId ? "✏️ Mengedit" : "✨ Baru"}
           </div>
-          <div className="grindboys-full">
-            <textarea
-              name="deskripsi"
-              placeholder="Deskripsi Fasilitas & Layanan Hotel"
-              rows="3"
-              value={formData.deskripsi}
-              onChange={handleChange}
-              required
-            ></textarea>
-          </div>
-          
-          <div className="grindboys-full" style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-            <label style={{ fontSize: "0.85rem", color: "#64748b", fontWeight: "600" }}>Upload Cover Gambar Hotel</label>
-            <input
-              id="fileInput"
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div>
+          <h2 className={styles.formHeading}>{selectedId ? "Edit Hotel" : "Tambah Hotel"}</h2>
+          <form onSubmit={handleSubmit}>
+            <div className={styles.formGrid}>
+              <div className={styles.field}>
+                <label className={styles.label}>Nama Hotel</label>
+                <input className={styles.input} name="nama" placeholder="Nama hotel" value={formData.nama} onChange={handleChange} required />
+              </div>
+              <div className={styles.field}>
+                <label className={styles.label}>Kota</label>
+                <input className={styles.input} name="kota" placeholder="Kota" value={formData.kota} onChange={handleChange} required />
+              </div>
+              <div className={styles.fullCol}>
+                <label className={styles.label}>Alamat</label>
+                <input className={styles.input} name="alamat" placeholder="Alamat lengkap" value={formData.alamat} onChange={handleChange} required />
+              </div>
+              <div className={styles.fullCol}>
+                <label className={styles.label}>Deskripsi</label>
+                <textarea className={styles.textarea} name="deskripsi" placeholder="Fasilitas, layanan, dll." rows={3} value={formData.deskripsi} onChange={handleChange} required />
+              </div>
+              <div className={styles.fullCol}>
+                <label className={styles.label}>Foto Hotel</label>
+                <input id="hotelFileInput" type="file" accept="image/*" onChange={handleFile} className={styles.fileInput} />
+                {preview && <img src={preview} alt="Preview" className={styles.preview} />}
+              </div>
+              <div className={styles.fullCol}>
+                <div className={styles.btnRow}>
+                  <button type="submit" disabled={submitting} className={`${styles.btn} ${styles.btnPrimary}`}>
+                    {submitting ? "Menyimpan..." : selectedId ? "Simpan Perubahan" : "Tambah Hotel"}
+                  </button>
+                  {selectedId && (
+                    <button type="button" onClick={reset} className={`${styles.btn} ${styles.btnGhost}`}>
+                      Batal
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
 
-          <div className="grindboys-full" style={{ marginTop: "10px" }}>
-            <button type="submit" className="grindboys-btn-primary">
-              {selectedId ? "Simpan Perubahan" : "Simpan Data"}
-            </button>
-            {selectedId && (
-              <button type="button" onClick={handleReset} className="grindboys-btn-secondary">
-                Batal Edit
-              </button>
-            )}
+        {/* Table */}
+        <div className={styles.tableCard}>
+          <div className={styles.tableHeader}>
+            <div>
+              <div className={styles.tableTitle}>Daftar Hotel</div>
+              <div className={styles.tableCount}>{hotels.length} properti terdaftar</div>
+            </div>
           </div>
-        </form>
-      </div>
-
-      {/* TAMPILAN TABEL */}
-      <div className="grindboys-card">
-        <h3>📋 Record Database Hotel</h3>
-        <div className="grindboys-table-wrap">
-          <table className="grindboys-table">
-            <thead>
-              <tr>
-                <th style={{ width: "60px" }}>No</th>
-                <th>Visual</th>
-                <th>Nama Tempat</th>
-                <th>Lokasi Kota</th>
-                <th>Alamat</th>
-                <th>Deskripsi</th>
-                <th style={{ textAlign: "center", width: "160px" }}>Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {hotels.length === 0 ? (
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead>
                 <tr>
-                  <td colSpan="7" style={{ textAlign: "center", color: "#94a3b8" }}>Database kosong atau backend terputus.</td>
+                  <th>#</th>
+                  <th>Gambar</th>
+                  <th>Nama</th>
+                  <th>Kota</th>
+                  <th>Alamat</th>
+                  <th>Deskripsi</th>
+                  <th style={{ textAlign: "center" }}>Aksi</th>
                 </tr>
-              ) : (
-                hotels.map((hotel, index) => (
-                  <tr key={hotel.id || index}>
-                    <td>{index + 1}</td>
-                    <td>
-                      {/* FIX: Menggunakan hotel.image_url hasil olahan backend controller */}
-                      {hotel.image_url ? (
-                        <img
-                          src={hotel.image_url}
-                          alt={hotel.name}
-                          style={{ width: "65px", height: "40px", objectFit: "cover", borderRadius: "4px" }}
-                          onError={(e) => { e.target.src = "https://placehold.co/65x40?text=No+Img"; }}
-                        />
-                      ) : (
-                        <span style={{ fontSize: "0.80rem", color: "#94a3b8" }}>Kosong</span>
-                      )}
-                    </td>
-                    {/* FIX: Field disesuaikan dengan key dari database (name, city, address, description) */}
-                    <td style={{ fontWeight: "600" }}>{hotel.name}</td>
-                    <td>{hotel.city}</td>
-                    <td>{hotel.address}</td>
-                    <td style={{ maxWidth: "180px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {hotel.description}
-                    </td>
-                    <td style={{ textAlign: "center", whiteSpace: "nowrap" }}>
-                      <button className="grindboys-btn-edit" onClick={() => handleEdit(hotel)}>Edit</button>
-                      <button className="grindboys-btn-delete" onClick={() => handleDelete(hotel.id)}>Hapus</button>
+              </thead>
+              <tbody>
+                {hotels.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className={styles.tableEmpty}>
+                      Belum ada data hotel. Tambahkan hotel baru melalui form di samping.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  hotels.map((hotel, i) => (
+                    <tr key={hotel.id || i} className={styles.tableRow}>
+                      <td>{i + 1}</td>
+                      <td className={styles.imgCell}>
+                        {hotel.image_url ? (
+                          <img src={hotel.image_url} alt={hotel.name} className={styles.thumb}
+                            onError={(e) => { e.target.style.display = "none"; }}
+                          />
+                        ) : (
+                          <span className={styles.noImg}>—</span>
+                        )}
+                      </td>
+                      <td className={styles.nameCell}>{hotel.name}</td>
+                      <td className={styles.metaCell}>{hotel.city}</td>
+                      <td className={styles.truncate}>{hotel.address}</td>
+                      <td className={styles.truncate}>{hotel.description}</td>
+                      <td className={styles.actionCell}>
+                        <button onClick={() => handleEdit(hotel)} className={`${styles.btnSm} ${styles.btnEdit}`}>Edit</button>
+                        <button onClick={() => handleDelete(hotel.id)} className={`${styles.btnSm} ${styles.btnDelete}`}>Hapus</button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
-
     </div>
   );
 }

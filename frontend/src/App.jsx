@@ -23,28 +23,12 @@ import AdminBooking from "./pages/admin/AdminBooking";
 function App() {
   return (
     <Routes>
-<<<<<<< HEAD
-      <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<Register />} />
-      <Route path="/payment-success" element={<PaymentSuccess />} />
-
-      <Route path="/" element={<Layout />}>
-        <Route index element={<Home />} />
-        <Route path="hotel" element={<Hotel />} />
-        <Route path="payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
-        <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-      </Route>
-
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute role={["admin", "super_admin"]}>
-=======
       {/* ========================= */}
       {/* PUBLIC ROUTES */}
       {/* ========================= */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/payment-success" element={<PaymentSuccess />} />
 
       {/* ========================= */}
       {/* USER LAYOUT */}
@@ -53,23 +37,8 @@ function App() {
         <Route index element={<Home />} />
         <Route path="hotel" element={<Hotel />} />
         <Route path="booking" element={<Booking />} />
-        
-        <Route
-          path="payment"
-          element={
-            <ProtectedRoute>
-              <Payment />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
+        <Route path="payment" element={<ProtectedRoute><Payment /></ProtectedRoute>} />
+        <Route path="profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
       </Route>
 
       {/* ========================= */}
@@ -78,8 +47,7 @@ function App() {
       <Route
         path="/admin"
         element={
-          <ProtectedRoute role="admin">
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
+          <ProtectedRoute role={["admin", "super_admin"]}>
             <AdminLayout />
           </ProtectedRoute>
         }
@@ -87,10 +55,7 @@ function App() {
         <Route index element={<AdminDashboard />} />
         <Route path="hotels" element={<AdminHotel />} />
         <Route path="rooms" element={<AdminRoom />} />
-<<<<<<< HEAD
         <Route path="bookings" element={<AdminBooking />} /> 
-=======
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
       </Route>
     </Routes>
   );

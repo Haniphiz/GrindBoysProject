@@ -1,5 +1,4 @@
 // backend/controllers/bookingController.js
-
 const db = require('../config/db');
 
 // 🔍 GET Riwayat Booking berdasarkan User Login (dengan JOIN lengkap)
@@ -49,11 +48,7 @@ const getBookings = async (req, res) => {
 // ➕ POST booking baru
 const addBooking = async (req, res) => {
   try {
-<<<<<<< HEAD
     const { room_id, total_price, check_in, check_out, guests, special_request } = req.body;
-=======
-    const { room_id, total_price, check_in, check_out } = req.body;
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
     const user_id = req.user.id;
 
     if (!room_id) {
@@ -66,15 +61,9 @@ const addBooking = async (req, res) => {
     const finalPrice = total_price || 0;
 
     const [result] = await db.query(
-<<<<<<< HEAD
       `INSERT INTO bookings (user_id, room_id, total_price, check_in, check_out, guests, special_request) 
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [user_id, room_id, finalPrice, check_in, check_out, guests || 1, special_request || null]
-=======
-      `INSERT INTO bookings (user_id, room_id, total_price, check_in, check_out, status) 
-       VALUES (?, ?, ?, ?, ?, 'pending')`,
-      [user_id, room_id, finalPrice, check_in || null, check_out || null]
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
     );
 
     res.status(201).json({
@@ -88,21 +77,14 @@ const addBooking = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
-// ✅ COMPLETE BOOKING / CHECKOUT (dari sisi USER)
-const completeBooking = async (req, res) => {
-=======
 // ❌ CANCEL BOOKING
 const cancelBooking = async (req, res) => {
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
   try {
     const booking_id = req.params.id;
     const user_id = req.user.id;
 
     const [bookingRows] = await db.query(
       `SELECT * FROM bookings WHERE id = ? AND user_id = ?`,
-<<<<<<< HEAD
-=======
       [booking_id, user_id]
     );
 
@@ -141,7 +123,7 @@ const cancelBooking = async (req, res) => {
   }
 };
 
-// ✅ COMPLETE BOOKING / CHECKOUT
+// ✅ COMPLETE BOOKING / CHECKOUT (dari sisi USER)
 const completeBooking = async (req, res) => {
   try {
     const booking_id = req.params.id;
@@ -149,7 +131,6 @@ const completeBooking = async (req, res) => {
 
     const [bookingRows] = await db.query(
       `SELECT * FROM bookings WHERE id = ? AND user_id = ?`,
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
       [booking_id, user_id]
     );
 
@@ -163,14 +144,7 @@ const completeBooking = async (req, res) => {
       return res.status(400).json({ status: "error", message: "Hanya booking berstatus confirmed yang dapat diselesaikan" });
     }
 
-<<<<<<< HEAD
     await db.query(`UPDATE bookings SET status = 'completed' WHERE id = ?`, [booking_id]);
-=======
-    await db.query(
-      `UPDATE bookings SET status = 'completed' WHERE id = ?`,
-      [booking_id]
-    );
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
 
     res.json({
       status: "success",
@@ -179,7 +153,6 @@ const completeBooking = async (req, res) => {
     });
   } catch (error) {
     console.error("COMPLETE BOOKING ERROR:", error);
-<<<<<<< HEAD
     res.status(500).json({ status: "error", message: "Terjadi kesalahan server" });
   }
 };
@@ -194,7 +167,6 @@ const getAdminBookings = async (req, res) => {
     const isSuperAdmin = req.user.role === 'super_admin';
     const hotelId = req.user.hotel_id;
 
-    // Jika bukan super admin dan tidak punya hotel_id, tolak
     if (!isSuperAdmin && !hotelId) {
       return res.status(403).json({
         status: "error",
@@ -240,26 +212,21 @@ const getAdminBookings = async (req, res) => {
     const conditions = [];
     const params = [];
 
-    // Jika BUKAN super admin, wajib filter berdasarkan hotel_id
-    // Jika Super Admin, TIDAK ADA filter hotel_id (dia melihat semua)
     if (!isSuperAdmin) {
       conditions.push(`h.id = ?`);
       params.push(hotelId);
     }
 
-    // Filter status
     if (status && status !== 'all') {
       conditions.push(`b.status = ?`);
       params.push(status);
     }
 
-    // Filter search (nama tamu atau ID booking)
     if (search) {
       conditions.push(`(u.username LIKE ? OR b.id LIKE ?)`);
       params.push(`%${search}%`, `%${search}%`);
     }
 
-    // Gabungkan kondisi WHERE jika ada
     if (conditions.length > 0) {
       sql += ` WHERE ` + conditions.join(' AND ');
     }
@@ -275,8 +242,6 @@ const getAdminBookings = async (req, res) => {
     });
   } catch (error) {
     console.error("GET ADMIN BOOKINGS ERROR:", error);
-=======
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
     res.status(500).json({
       status: "error",
       message: "Terjadi kesalahan server saat mengambil data booking"
@@ -284,7 +249,6 @@ const getAdminBookings = async (req, res) => {
   }
 };
 
-<<<<<<< HEAD
 // GET /api/bookings/admin/stats — Super Admin melihat statistik SEMUA hotel
 const getBookingStats = async (req, res) => {
   try {
@@ -310,7 +274,6 @@ const getBookingStats = async (req, res) => {
     
     const params = [];
 
-    // Jika BUKAN super admin, filter berdasarkan hotel_id
     if (!isSuperAdmin) {
       sql += ` WHERE r.hotel_id = ?`;
       params.push(hotelId);
@@ -332,7 +295,7 @@ const getBookingStats = async (req, res) => {
   }
 };
 
-// PUT /api/bookings/:id/approve — Approve booking (pending → confirmed)
+// PUT /api/bookings/:id/approve
 const approveBooking = async (req, res) => {
   try {
     const { id } = req.params;
@@ -357,7 +320,7 @@ const approveBooking = async (req, res) => {
   }
 };
 
-// PUT /api/bookings/:id/reject — Reject booking (pending → cancelled)
+// PUT /api/bookings/:id/reject
 const rejectBooking = async (req, res) => {
   try {
     const { id } = req.params;
@@ -387,7 +350,7 @@ const rejectBooking = async (req, res) => {
   }
 };
 
-// PUT /api/bookings/:id/checkin — Check-in tamu (confirmed → checked_in)
+// PUT /api/bookings/:id/checkin
 const checkIn = async (req, res) => {
   try {
     const { id } = req.params;
@@ -412,7 +375,7 @@ const checkIn = async (req, res) => {
   }
 };
 
-// PUT /api/bookings/:id/checkout — Check-out tamu (checked_in → completed)
+// PUT /api/bookings/:id/checkout
 const checkOut = async (req, res) => {
   try {
     const { id } = req.params;
@@ -441,6 +404,7 @@ module.exports = {
   // Fungsi User
   getBookings,
   addBooking,
+  cancelBooking,
   completeBooking,
   // Fungsi Super Admin
   getAdminBookings,
@@ -449,11 +413,4 @@ module.exports = {
   rejectBooking,
   checkIn,
   checkOut
-=======
-module.exports = {
-  getBookings,
-  addBooking,
-  cancelBooking,
-  completeBooking
->>>>>>> 459e131ca4330585254e6f5e7ff5a98e3301e2a8
 };
