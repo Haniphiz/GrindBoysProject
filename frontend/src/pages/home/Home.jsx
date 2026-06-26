@@ -1,9 +1,8 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import "./Home.css";
 
-
-const featuredHotels = [
+const allHotels = [
   {
     id: 1,
     name: "The Grand Majapahit",
@@ -44,6 +43,46 @@ const featuredHotels = [
     image: "https://images.unsplash.com/photo-1582719508461-905c673771fd?w=600&q=80",
     tag: "Petualangan",
   },
+  {
+    id: 5,
+    name: "Hotel Tentrem Yogyakarta",
+    location: "Yogyakarta, DIY",
+    price: 980000,
+    rating: 4.8,
+    reviews: 430,
+    image: "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=600&q=80",
+    tag: "Populer",
+  },
+  {
+    id: 6,
+    name: "The Mulia Bali",
+    location: "Nusa Dua, Bali",
+    price: 3200000,
+    rating: 4.9,
+    reviews: 612,
+    image: "https://images.unsplash.com/photo-1602002418082-a4443e081dd1?w=600&q=80",
+    tag: "Mewah",
+  },
+  {
+    id: 7,
+    name: "Alila Solo",
+    location: "Solo, Jawa Tengah",
+    price: 750000,
+    rating: 4.6,
+    reviews: 210,
+    image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=600&q=80",
+    tag: "Butik",
+  },
+  {
+    id: 8,
+    name: "Santika Premiere Jakarta",
+    location: "Jakarta Pusat, DKI Jakarta",
+    price: 890000,
+    rating: 4.5,
+    reviews: 388,
+    image: "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&q=80",
+    tag: "Bisnis",
+  },
 ];
 
 const destinations = [
@@ -60,8 +99,57 @@ export default function Home() {
   const [location, setLocation] = useState("");
   const [guests, setGuests] = useState(2);
 
+  // State hasil pencarian
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const resultsRef = useRef(null);
+
   const formatPrice = (price) =>
     new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", minimumFractionDigits: 0 }).format(price);
+
+  // ── Fungsi Cari Hotel ──
+  const handleSearch = () => {
+    const query = location.trim().toLowerCase();
+    const filtered = allHotels.filter((h) => {
+      if (!query) return true;
+      return (
+        h.location.toLowerCase().includes(query) ||
+        h.name.toLowerCase().includes(query)
+      );
+    });
+    setSearchResults(filtered);
+    setSearchQuery(location.trim());
+
+    // Scroll ke hasil
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  // Klik destinasi populer langsung cari
+  const handleDestinationClick = (destName) => {
+    setLocation(destName);
+    const query = destName.toLowerCase();
+    const filtered = allHotels.filter((h) =>
+      h.location.toLowerCase().includes(query) || h.name.toLowerCase().includes(query)
+    );
+    setSearchResults(filtered);
+    setSearchQuery(destName);
+    setTimeout(() => {
+      resultsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  };
+
+  // Reset pencarian
+  const handleReset = () => {
+    setSearchResults(null);
+    setSearchQuery("");
+    setLocation("");
+    setCheckIn("");
+    setCheckOut("");
+    setGuests(2);
+  };
 
   return (
     <main className="home">
@@ -87,6 +175,7 @@ export default function Home() {
                 placeholder="Cari kota atau hotel..."
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               />
             </div>
             <div className="search-card__divider" />
@@ -108,10 +197,88 @@ export default function Home() {
                 <button onClick={() => setGuests(guests + 1)}>+</button>
               </div>
             </div>
-            <button className="search-card__btn">🔍 Cari Hotel</button>
+            <button className="search-card__btn" onClick={handleSearch}>
+              🔍 Cari Hotel
+            </button>
           </div>
         </div>
       </section>
+
+      {/* ── HASIL PENCARIAN (muncul setelah klik cari) ── */}
+      {searchResults !== null && (
+        <section className="section section--alt" ref={resultsRef}>
+          <div className="section__header animate-fade-up">
+            <div>
+              <p className="section__eyebrow">Hasil Pencarian</p>
+              <h2 className="section__title">
+                {searchQuery ? `Hotel di "${searchQuery}"` : "Semua Hotel"}
+                <span style={{ fontSize: "1rem", fontWeight: 400, color: "#888", marginLeft: "0.75rem" }}>
+                  {searchResults.length} hotel ditemukan
+                </span>
+              </h2>
+              {(checkIn || checkOut) && (
+                <p style={{ color: "#888", fontSize: "0.9rem", marginTop: "0.25rem" }}>
+                  {checkIn && `Check-in: ${checkIn}`}{checkIn && checkOut && " · "}{checkOut && `Check-out: ${checkOut}`} · {guests} Tamu
+                </p>
+              )}
+            </div>
+            <button
+              onClick={handleReset}
+              style={{
+                background: "none",
+                border: "1.5px solid #ddd",
+                borderRadius: "8px",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+                fontSize: "0.9rem",
+                color: "#555",
+              }}
+            >
+              ✕ Reset
+            </button>
+          </div>
+
+          {searchResults.length === 0 ? (
+            <div style={{ textAlign: "center", padding: "3rem 0", color: "#888" }}>
+              <p style={{ fontSize: "3rem" }}>🏨</p>
+              <p style={{ fontSize: "1.1rem" }}>Tidak ada hotel yang cocok dengan pencarian Anda.</p>
+              <p>Coba kata kunci lain seperti "Bali", "Jakarta", atau nama hotel.</p>
+            </div>
+          ) : (
+            <div className="hotels-grid">
+              {searchResults.map((h) => (
+                <div className="hotel-card" key={h.id}>
+                  <div className="hotel-card__img-wrap">
+                    <img src={h.image} alt={h.name} loading="lazy" />
+                    <span className="hotel-card__tag">{h.tag}</span>
+                    <button className="hotel-card__wishlist" aria-label="Simpan">♡</button>
+                  </div>
+                  <div className="hotel-card__body">
+                    <div className="hotel-card__meta">
+                      <span className="hotel-card__rating">★ {h.rating}</span>
+                      <span className="hotel-card__reviews">({h.reviews} ulasan)</span>
+                    </div>
+                    <h3 className="hotel-card__name">{h.name}</h3>
+                    <p className="hotel-card__location">📍 {h.location}</p>
+                    <div className="hotel-card__footer">
+                      <div>
+                        <span className="hotel-card__price">{formatPrice(h.price)}</span>
+                        <span className="hotel-card__per"> / malam</span>
+                      </div>
+                      <button
+                        className="hotel-card__btn"
+                        onClick={() => navigate("/payment", { state: { hotel: h } })}
+                      >
+                        Pesan
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+      )}
 
       {/* ── STATS ── */}
       <section className="stats">
@@ -137,11 +304,16 @@ export default function Home() {
             <p className="section__eyebrow">Jelajahi Indonesia</p>
             <h2 className="section__title">Destinasi Terpopuler</h2>
           </div>
-          <a href="#" className="section__link">Lihat Semua →</a>
+          <Link to="/hotel" className="section__link">Lihat Semua →</Link>
         </div>
         <div className="destinations">
           {destinations.map((d) => (
-            <div className="dest-card" key={d.name}>
+            <div
+              className="dest-card"
+              key={d.name}
+              onClick={() => handleDestinationClick(d.name)}
+              style={{ cursor: "pointer" }}
+            >
               <img src={d.img} alt={d.name} loading="lazy" />
               <div className="dest-card__info">
                 <strong>{d.name}</strong>
@@ -152,42 +324,44 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── HOTEL UNGGULAN ── */}
-      <section className="section section--alt">
-        <div className="section__header animate-fade-up delay-3">
-          <div>
-            <p className="section__eyebrow">Pilihan Editor</p>
-            <h2 className="section__title">Hotel Unggulan</h2>
-          </div>
-          <a href="#" className="section__link">Lihat Semua →</a>
-        </div>
-        <div className="hotels-grid">
-          {featuredHotels.map((h) => (
-            <div className="hotel-card" key={h.id}>
-              <div className="hotel-card__img-wrap">
-                <img src={h.image} alt={h.name} loading="lazy" />
-                <span className="hotel-card__tag">{h.tag}</span>
-                <button className="hotel-card__wishlist" aria-label="Simpan">♡</button>
-              </div>
-              <div className="hotel-card__body">
-                <div className="hotel-card__meta">
-                  <span className="hotel-card__rating">★ {h.rating}</span>
-                  <span className="hotel-card__reviews">({h.reviews} ulasan)</span>
-                </div>
-                <h3 className="hotel-card__name">{h.name}</h3>
-                <p className="hotel-card__location">📍 {h.location}</p>
-                <div className="hotel-card__footer">
-                  <div>
-                    <span className="hotel-card__price">{formatPrice(h.price)}</span>
-                    <span className="hotel-card__per"> / malam</span>
-                  </div>
-                  <button className="hotel-card__btn" onClick={() => navigate("/payment", { state: { hotel: h } })}>Pesan</button>
-                </div>
-              </div>
+      {/* ── HOTEL UNGGULAN (sembunyikan jika sedang menampilkan hasil pencarian) ── */}
+      {searchResults === null && (
+        <section className="section section--alt">
+          <div className="section__header animate-fade-up delay-3">
+            <div>
+              <p className="section__eyebrow">Pilihan Editor</p>
+              <h2 className="section__title">Hotel Unggulan</h2>
             </div>
-          ))}
-        </div>
-      </section>
+            <Link to="/hotel" className="section__link">Lihat Semua →</Link>
+          </div>
+          <div className="hotels-grid">
+            {allHotels.slice(0, 4).map((h) => (
+              <div className="hotel-card" key={h.id}>
+                <div className="hotel-card__img-wrap">
+                  <img src={h.image} alt={h.name} loading="lazy" />
+                  <span className="hotel-card__tag">{h.tag}</span>
+                  <button className="hotel-card__wishlist" aria-label="Simpan">♡</button>
+                </div>
+                <div className="hotel-card__body">
+                  <div className="hotel-card__meta">
+                    <span className="hotel-card__rating">★ {h.rating}</span>
+                    <span className="hotel-card__reviews">({h.reviews} ulasan)</span>
+                  </div>
+                  <h3 className="hotel-card__name">{h.name}</h3>
+                  <p className="hotel-card__location">📍 {h.location}</p>
+                  <div className="hotel-card__footer">
+                    <div>
+                      <span className="hotel-card__price">{formatPrice(h.price)}</span>
+                      <span className="hotel-card__per"> / malam</span>
+                    </div>
+                    <button className="hotel-card__btn" onClick={() => navigate("/payment", { state: { hotel: h } })}>Pesan</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── KENAPA GRINDBOYS ── */}
       <section className="section">
